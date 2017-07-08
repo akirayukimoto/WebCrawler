@@ -204,3 +204,6 @@ After doing this, you may fix the identity used for this commit with:
  2 files changed, 16 insertions(+)
 [master 4917cc1] Commit web-crawler
  1 file changed, 15 insertions(+)
+[master 509121e] Commit web-crawler
+ 3 files changed, 226 insertions(+)
+ create mode 100644 HashTableTemplate.h
