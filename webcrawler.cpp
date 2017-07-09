@@ -154,7 +154,7 @@ WebCrawler::crawl()
 			continue;
 		}
 
-		parse(buffer, next);
+		parse(buffer, n);
 
 		_headURL++;
 
