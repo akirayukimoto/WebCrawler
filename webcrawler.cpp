@@ -56,7 +56,8 @@ WebCrawler::insertURL() {
 	}
 }
 
-char *nextWord(char * &c) {
+char*
+WebCrawler::nextWord(char * &c) {
 	char * nw = new char[1000];
 	int i = 0;
 	while (*c != '\0') {
