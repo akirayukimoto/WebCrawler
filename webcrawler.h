@@ -37,6 +37,15 @@ class WebCrawler : public SimpleHTMLParser {
   void onContentFound(char c);
   void onAnchorFound(char *url);
 
+  // Supported functions
+  char *nextWord(char * &c);
+  
+  // Add urls into _urlToRecord
+  void insertURL();
+
+  // Add words to wordToURLRecordList
+  void insertWord();
+
   // crawl the web
   void crawl();
 
