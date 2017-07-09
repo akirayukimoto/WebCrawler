@@ -98,7 +98,7 @@ WebCrawler::insertWord() {
 					//URLRecordList *data = new URLRecordList();
 					data->_urlRecordIndex = i;
 					data->_next = tmp;
-					_wordToURLRecordList->insert(c, data);
+					_wordToURLRecordList->insertItem(c, data);
 				}
 				else {
 					URLRecordList *tmp2 = tmp;
@@ -117,7 +117,7 @@ WebCrawler::insertWord() {
 					else {
 						data->_urlRecordIndex = i;
 						data->_next = tmp;
-						_wordToURLRecordList->insert(c, data);
+						_wordToURLRecordList->insertItem(c, data);
 					}
 
 				}
