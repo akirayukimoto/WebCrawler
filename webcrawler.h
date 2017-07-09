@@ -33,6 +33,10 @@ class WebCrawler : public SimpleHTMLParser {
   // Create a web crawler object with the initial urls
   WebCrawler(int maxUrls, int nurlRoots, const char ** urlRoots);
   
+  // Override from SimpleHTMLParser
+  void onContentFound(char c);
+  void onAnchorFound(char *url);
+
   // crawl the web
   void crawl();
 

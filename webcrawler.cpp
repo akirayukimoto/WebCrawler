@@ -35,6 +35,14 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 	_urlToUrlRecordList = new HashTableTemplate<URLRecordList*>();
 }
 
+void 
+WebCrawler::onContentFound(char c) {
+}
+
+void
+WebCrawler::onAnchorFound(char *url) {
+}
+
 void
 WebCrawler::crawl()
 {
@@ -76,7 +84,8 @@ WebCrawler::writeWordFile(const char *wordFileName)
 {
 	FILE *file = fopen(wordFileName, "w");
 	for (int i = 0; i < _tailURL; i++) {
-		fprintf(file, "%s", _wordToURLRecordList->_buckets[i]._key;
+		fprintf(file, "%s", _wordToURLRecordList->_buckets[i]._key);
+		
 	}
 	fclose(file);
 }
