@@ -4,7 +4,7 @@ all: git-commit gethttp webcrawler
 gethttp: gethttp.cpp openhttp.cpp SimpleHTMLParser.cpp
 	g++ -o gethttp -g gethttp.cpp openhttp.cpp SimpleHTMLParser.cpp -lcurl
 
-webcrawler: webcrawler.cpp openhttp.cpp SimpleHTMLParser.cpp HashTableTemplate.h
+webcrawler: webcrawler.cpp openhttp.cpp SimpleHTMLParser.cpp gethttp.cpp
 	g++ -o webcrawler -g openhttp.cpp SimpleHTMLParser.cpp webcrawler.cpp HashTableTemplate.h -lcurl
 
 git-commit:
