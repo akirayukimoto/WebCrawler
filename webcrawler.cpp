@@ -111,7 +111,7 @@ WebCrawler::insertWord() {
 						tmp2 = tmp2->_next;
 					}
 					if (flag == 1) {
-						found = 0;
+						flag = 0;
 						continue;
 					}
 					else {
