@@ -108,15 +108,15 @@ WebCrawler::insertWord() {
 							flag = 1;
 							break;
 						}
-						tmp2 = tmp2->next;
+						tmp2 = tmp2->_next;
 					}
 					if (flag == 1) {
 						found = 0;
 						continue;
 					}
 					else {
-						data->urlRecordIndex = i;
-						data->next = tmp;
+						data->_urlRecordIndex = i;
+						data->_next = tmp;
 						_wordToURLRecordList->insert(c, data);
 					}
 
