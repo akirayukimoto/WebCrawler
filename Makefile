@@ -1,5 +1,5 @@
 
-all: git-commit gethttp
+all: git-commit gethttp webcrawler
 
 gethttp: gethttp.cpp openhttp-old.cpp SimpleHTMLParser.cpp
 	g++ -o gethttp -g gethttp.cpp openhttp.cpp SimpleHTMLParser.cpp -lcurl
@@ -13,3 +13,4 @@ git-commit:
 
 clean:
 	rm -f *.o gethttp core
+	rm -f *.o webcrawler core
