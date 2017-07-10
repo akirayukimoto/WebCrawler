@@ -267,13 +267,13 @@ WebCrawler::crawl()
 		char *curr = _urlArray[_headURL]._url;
 		
 		int n;
-		char *buffer = fetchHTML(curr, &n);
-		if (buffer == NULL) {
+		char *buff = fetchHTML(curr, &n);
+		if (buff == NULL) {
 			_headURL = _headURL + 1;
 			continue;
 		}
 
-		parse(buffer, n);
+		parse(buff, n);
 
 		_urlArray[_headURL]._description = description;
 
