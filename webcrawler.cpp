@@ -146,8 +146,8 @@ WebCrawler::nextWord(char * &c) {
 			}
 		}
 		else {
-			nw[i] = *c;
-			i++;
+			nw[i++] = *c;
+			//i++;
 			c++;
 		}
 	}
