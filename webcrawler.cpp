@@ -95,7 +95,7 @@ WebCrawler::onAnchorFound(char *url) {
 			return;
 		}
 		else {
-			_urlArray[i]._url = strdup(url);
+			_urlArray[_tailURL]._url = strdup(url);
 			_tailURL++;
 		}
 	}
