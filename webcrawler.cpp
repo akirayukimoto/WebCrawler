@@ -87,7 +87,7 @@ WebCrawler::onAnchorFound(char *url) {
 
 	if (strncmp(http, url, 7) == 0) {
 		for (int i = 0; i < _tailURL; i++) {
-			if (!strcmp(url, _urlArray[i]._url)) {
+			if (strcmp(url, _urlArray[i]._url) == 0) {
 				flag1 = 1;
 				break;
 			}
