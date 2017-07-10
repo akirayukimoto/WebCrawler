@@ -85,7 +85,7 @@ WebCrawler::onAnchorFound(char *url) {
 	const char *hashtag = "#";
 	bss = new char[200];
 
-	if (!strncmp(http, url, 7)) {
+	if (strncmp(http, url, 7) == 0) {
 		for (int i = 0; i < _tailURL; i++) {
 			if (!strcmp(url, _urlArray[i]._url)) {
 				flag1 = 1;
@@ -101,13 +101,14 @@ WebCrawler::onAnchorFound(char *url) {
 			_tailURL++;
 		}
 	}
-	else if (!strncmp(url, slash, 2)) {
+	else if (strncmp(url, slash, 2) == 0) {
 		//return;
 	}
 	else {
 		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
 			bss = strdup(_urlArray[_headURL]._url);
-			if (strncmp(url, "/", 1)) bss = strcat(bss, "/");
+			if (strncmp(url, "/", 1)) 
+				bss = strcat(bss, "/");
 			bss = strcat(bss, url);
 			_urlArray[_tailURL]._url = strdup(bss);
 			_urlArray[_tailURL]._description = NULL;
