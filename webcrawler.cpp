@@ -64,7 +64,7 @@ WebCrawler::onContentFound(char c) {
 		ptr = buffer;
 	}
 	else if (c == '"') {
-		return;
+		//return;
 	}
 	else {
 		*ptr = c;
@@ -102,7 +102,7 @@ WebCrawler::onAnchorFound(char *url) {
 		}
 	}
 	else if (!strncmp(slash, url, 2)) {
-		return;
+		//return;
 	}
 	else {
 		if (strncmp(https, url, 8) && strncmp(hashtag, url, 1)) {
