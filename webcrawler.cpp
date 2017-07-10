@@ -23,13 +23,13 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 	_urlArray = new URLRecord[maxUrls + nurlRoots];
 
 	for (int i = 0; i < nurlRoots; i++) {
-		char *url = strdup(urlRoots[i]);
+		//char *url = strdup(urlRoots[i]);
 		//int len = strlen(urlRoots[i]);
 		//char *url = new char[len];
 		//char *url = new char [strlen(urlRoots[i])];
 		//strcpy(url, urlRoots[i]);
 		//if (url[len - 1] != '/') url[len - 1] = '/';
-		_urlArray[i]._url = strdup(url);
+		_urlArray[i]._url = strdup(urlRoots[i]);
 		_urlArray[i]._description = (char *)malloc(1000);
 		_urlArray[i]._description = NULL;
 	
@@ -283,9 +283,9 @@ WebCrawler::crawl()
 		//_urlArray[_headURL]._description = strdup(description);
 	}
 	insertURL();
-	for (int i = 0; i < _tailURL; i++) {
-		printf("%i %s\n",i, _urlArray[i]._description); 
-	}
+	//for (int i = 0; i < _tailURL; i++) {
+	//	printf("%i %s\n",i, _urlArray[i]._description); 
+	//}
 	insertWord();
 	//_urlArray[_headURL]._description = strdup(description);
 	const char *urlFile = "url.txt";

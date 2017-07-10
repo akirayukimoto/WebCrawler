@@ -56,7 +56,7 @@ class WebCrawler : public SimpleHTMLParser {
   void writeWordFile(const char *wordFileName);
 
   // Add any other objects you may need
-  ~WebCrawler();
+  //~WebCrawler();
 };
 
 
