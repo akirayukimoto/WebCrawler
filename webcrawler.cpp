@@ -10,6 +10,8 @@
 char *word;
 char *description;
 
+int inserted;
+
 WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 {
 	// Allocate space for _urlArray
@@ -38,12 +40,39 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 	_wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
 }
 
+char *buffer = new char[10000];
+char *ptr = buffer;
+
 void 
 WebCrawler::onContentFound(char c) {
+	
+	if (c == '[') {
+		*ptr = '\0';
+		ptr = buffer;
+		if (_urlArray[_headURL]._description == NULL) 
+			_urlArray[_headURL]._description = strdup(ptr);
+		else {
+			strcat(_urlArray[_headURL]._description, " ");
+			strcat(_urlArray[_headURL]._description, ptr);
+		}
+		
+	}
+	else if (c == ']') {
+		memset(buffer, 0, strlen(buffer));
+		ptr = buffer;
+	}
+	else if (c == '"') {
+		return;
+	}
+	else {
+		*ptr = c;
+		ptr++;
+	}
 }
 
 void
 WebCrawler::onAnchorFound(char *url) {
+	if (_tailURL >= _maxURL) return;
 }
 
 void
@@ -191,13 +220,48 @@ void
 WebCrawler::writeWordFile(const char *wordFileName)
 {
 	FILE *file = fopen(wordFileName, "w");
-	for (int i = 0; i < _tailURL; i++) {
-		fprintf(file, "%s", _wordToURLRecordList->_buckets[i]->_key);
+
+	HashTableTemplateInterator<URLRecordList *> it(_wordToURLRecordList);
+	const char *key;
+	URLRecordList *data;
+	int j = -1;
+
+	while(it.next(key, data)) {
+		fprintf(file, "%s ", key);
+		URLRecordList *curr = data;
+		while (curr != NULL) {
+			if (j != curr->_urlRecordIndex) {
+				fprintf(file, "%d ", curr->_urlRecordIndex);
+			}
+			j = curr->_urlRecordIndex;
+			curr = curr->_next;
+		}
+		fprintf(file, "\n");
 		
 	}
 	fclose(file);
 }
 
 int main(int argc, char **argv) {
+	if (argc < 2) {
+		fprintf(stderr, "Usage: webcrawler [-u <maxurls>] url-list\n");
+		exit(1);
+	}
+	int maxUrls = 1000;
+	int inserted = 0;
+	int start = 1;
+	const char **initialUrls;
+	if (!strcmp(argv[1], "-u") {
+		maxUrls = atoi(argv[2]);
+		start = 3;
+	}
+	initialUrls = new const char *[(argc - start)];
+
+	for (i = start; i < argc; i++) {
+		initialUrls[(i - start)] = argv[i];
+	}
+
+	WebCrawler *crawler = new WebCrawler(maxUrls, (argc - start), initialUrls);
+	crawler->crawl();
 	
 }
