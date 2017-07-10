@@ -266,7 +266,7 @@ WebCrawler::crawl()
 		// a URLRecordList in the _wordToURLRecordList table if the URL is not already there
 		char *curr = _urlArray[_headURL]._url;
 		
-		int n = 0;
+		int n;
 		char *buffer = fetchHTML(curr, &n);
 		if (buffer == NULL) {
 			_headURL++;
