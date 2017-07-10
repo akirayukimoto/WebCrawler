@@ -257,7 +257,7 @@ int main(int argc, char **argv) {
 	}
 	initialUrls = new const char *[(argc - start)];
 
-	for (i = start; i < argc; i++) {
+	for (int i = start; i < argc; i++) {
 		initialUrls[(i - start)] = argv[i];
 	}
 
