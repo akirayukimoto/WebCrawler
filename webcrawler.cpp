@@ -269,13 +269,15 @@ WebCrawler::crawl()
 		int n;
 		char *buffer = fetchHTML(curr, &n);
 		if (buffer == NULL) {
-			_headURL++;
+			_headURL = _headURL + 1;
 			continue;
 		}
 
 		parse(buffer, n);
 
-		_headURL++;
+		_urlArray[_headURL]._description = description;
+
+		_headURL = _headURL +1;
 
 		//insertURL();
 		//insertWord();
