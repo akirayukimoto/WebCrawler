@@ -101,11 +101,11 @@ WebCrawler::onAnchorFound(char *url) {
 			_tailURL++;
 		}
 	}
-	else if (!strncmp(slash, url, 2)) {
+	else if (!strncmp(url, slash, 2)) {
 		//return;
 	}
 	else {
-		if (strncmp(https, url, 8) && strncmp(hashtag, url, 1)) {
+		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
 			bss = strdup(_urlArray[_headURL]._url);
 			if (strncmp(url, "/", 1)) bss = strcat(bss, "/");
 			bss = strcat(bss, url);
