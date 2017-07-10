@@ -37,7 +37,7 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 	for (int i = 0; i < (nurlRoots + maxUrls); i++) {
 		_urlArray[i]._description = (char *)malloc(1000);
 	}
-	_urlToUrlRecord = new HashTableTemplate<int>;
+	_urlToUrlRecord = new HashTableTemplate<int>();
 	_wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
 }
 
