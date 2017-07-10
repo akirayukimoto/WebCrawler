@@ -283,10 +283,13 @@ WebCrawler::crawl()
 		//_urlArray[_headURL]._description = strdup(description);
 	}
 	insertURL();
+	for (int i = 0; i < _tailURL; i++) {
+		printf("%i %s\n",i, _urlArray[i]._description); 
+	}
 	insertWord();
 	//_urlArray[_headURL]._description = strdup(description);
-	
-	writeURLFile("url.txt");
+	const char *urlFile = "url.txt";
+	writeURLFile(urlFile);
 	writeWordFile("word.txt");
 
 }
