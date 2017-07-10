@@ -206,7 +206,7 @@ WebCrawler::insertWord() {
 void
 WebCrawler::writeURLFile(const char *urlFileName)
 {
-	FILE *f = fopen(urlFileName, "r");
+	FILE *f = fopen(urlFileName, "w");
 	for (int i = 0; i < _tailURL; i++) {
 		fprintf(f, "%d %s\n",i, _urlArray[i]._url);
 		if (_urlArray[i]._description != NULL) 
