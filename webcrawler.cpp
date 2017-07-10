@@ -221,7 +221,7 @@ WebCrawler::writeWordFile(const char *wordFileName)
 {
 	FILE *file = fopen(wordFileName, "w");
 
-	HashTableTemplateInterator<URLRecordList *> it(_wordToURLRecordList);
+	HashTableTemplateIterator<URLRecordList *> it(_wordToURLRecordList);
 	const char *key;
 	URLRecordList *data;
 	int j = -1;
