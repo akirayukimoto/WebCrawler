@@ -266,7 +266,7 @@ WebCrawler::crawl()
 		// a URLRecordList in the _wordToURLRecordList table if the URL is not already there
 		char *curr = _urlArray[_headURL]._url;
 		
-		int n = (int *)malloc(sizeof(int));
+		int n = 0;
 		char *buffer = fetchHTML(buffer, &n);
 		if (buffer == NULL) {
 			_headURL++;
@@ -315,7 +315,7 @@ int main(int argc, char **argv) {
 
 	WebCrawler *crawler = new WebCrawler(maxUrls, (argc - start), initialUrls);
 	crawler->crawl();
-	crawler->writeURLFile("url.txt");
-	crawler->writeWordFile("word.txt");
+	//crawler->writeURLFile("url.txt");
+	//crawler->writeWordFile("word.txt");
 	
 }
