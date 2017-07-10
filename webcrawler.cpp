@@ -209,10 +209,13 @@ WebCrawler::writeURLFile(const char *urlFileName)
 	FILE *f = fopen(urlFileName, "w");
 	for (int i = 0; i < _tailURL; i++) {
 		fprintf(f, "%d %s\n",i, _urlArray[i]._url);
-		if (_urlArray[i]._description != NULL) 
+		if (_urlArray[i]._description != NULL) {
+			printf("%s\n", _urlArray[i]._description);
 			fprintf(f, "%s\n", _urlArray[i]._description);
+		}
 		else fprintf(f, "%s\n", "");
-		fprintf(f, "%s\n", "");
+		//fprintf(f, "%s\n", "");
+		fprintf(f, "\n");
 	}
 	fclose(f);
 }
