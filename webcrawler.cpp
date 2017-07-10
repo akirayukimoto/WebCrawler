@@ -29,14 +29,15 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 		//char *url = new char [strlen(urlRoots[i])];
 		//strcpy(url, urlRoots[i]);
 		//if (url[len - 1] != '/') url[len - 1] = '/';
-		_urlArray[i]._url = url;
+		_urlArray[i]._url = strdup(url);
+		_urlArray[i]._description = (char *)malloc(1000);
 		_urlArray[i]._description = NULL;
 	
 	}
-	//for (int i = 0; i < (nurlRoots + maxUrls); i++) {
-		
-	//}
-	_urlToUrlRecord = new HashTableTemplate<int>();
+	for (int i = 0; i < (nurlRoots + maxUrls); i++) {
+		_urlArray[i]._description = (char *)malloc(1000);
+	}
+	_urlToUrlRecord = new HashTableTemplate<int>;
 	_wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
 }
 
@@ -165,7 +166,7 @@ WebCrawler::insertWord() {
 			char *des = _urlArray[i]._description;
 			char *c = nextWord(des);
 			URLRecordList *tmp = NULL;
-			URLRecordList *curr = NULL;
+			URLRecordList *curr;
 			if (c != NULL) {
 				URLRecordList *data = new URLRecordList();
 				if (!_wordToURLRecordList->find(c, &tmp)) {
@@ -189,6 +190,7 @@ WebCrawler::insertWord() {
 						continue;
 					}
 					else {
+						//URLRecordList *data = new URLRecordList();
 						data->_urlRecordIndex = i;
 						data->_next = tmp;
 						_wordToURLRecordList->insertItem(c, data);
