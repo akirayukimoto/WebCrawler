@@ -159,17 +159,18 @@ WebCrawler::crawl()
 
 		_headURL++;
 
-		insertURL();
-		insertWord();
+		//insertURL();
+		//insertWord();
 
-		_urlArray[_headURL]._description = strdup(description);
-
-
-
-
-
-
+		//_urlArray[_headURL]._description = strdup(description);
 	}
+	insertURL();
+	insertWord();
+	//_urlArray[_headURL]._description = strdup(description);
+	
+	writeURLFile("url.txt");
+	writeWordFile("word.txt");
+
 }
 
 void
