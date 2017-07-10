@@ -40,7 +40,8 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 	_wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
 }
 
-char *buffer = new char[10000];
+//char *buffer = new char[10000];
+char *buffer = (char *)malloc(sizeof(char) * 10000);
 char *ptr = buffer;
 
 void 
@@ -127,9 +128,10 @@ WebCrawler::insertURL() {
 	}
 }
 
+char *nw = (char *)malloc(sizeof(char) * 1000);
 char*
 WebCrawler::nextWord(char * &c) {
-	char * nw = new char[1000];
+	//char * nw = new char[1000];
 	int i = 0;
 	while (*c != '\0') {
 		if (*c == ' ' || *c == '.' || *c == ',' || *c == '-') {
