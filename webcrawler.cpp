@@ -202,6 +202,46 @@ WebCrawler::insertWord() {
 }
 
 void
+WebCrawler::writeURLFile(const char *urlFileName)
+{
+	FILE *f = fopen(urlFileName, "r");
+	for (int i = 0; i < _tailURL; i++) {
+		fprintf(f, "%d %s\n",i, _urlArray[i]._url);
+		if (_urlArray[i]._description != NULL) 
+			fprintf(f, "%s\n", _urlArray[i]._description);
+		else fprintf(f, "%s\n", "");
+		fprintf(f, "%s\n", "");
+	}
+	fclose(f);
+}
+
+void
+WebCrawler::writeWordFile(const char *wordFileName)
+{
+	FILE *file = fopen(wordFileName, "w");
+
+	HashTableTemplateIterator<URLRecordList *> it(_wordToURLRecordList);
+	const char *key;
+	URLRecordList *data;
+	int j = -1;
+
+	while(it.next(key, data)) {
+		fprintf(file, "%s ", key);
+		URLRecordList *curr = data;
+		while (curr != NULL) {
+			if (j != curr->_urlRecordIndex) {
+				fprintf(file, "%d ", curr->_urlRecordIndex);
+			}
+			j = curr->_urlRecordIndex;
+			curr = curr->_next;
+		}
+		fprintf(file, "\n");
+		
+	}
+	fclose(file);
+}
+
+void
 WebCrawler::crawl()
 {
 	while (_headURL < _tailURL) {
@@ -244,46 +284,6 @@ WebCrawler::crawl()
 	writeURLFile("url.txt");
 	writeWordFile("word.txt");
 
-}
-
-void
-WebCrawler::writeURLFile(const char *urlFileName)
-{
-	FILE *f = fopen(urlFileName, "r");
-	for (int i = 0; i < _tailURL; i++) {
-		fprintf(f, "%d %s\n",i, _urlArray[i]._url);
-		if (_urlArray[i]._description != NULL) 
-			fprintf(f, "%s\n", _urlArray[i]._description);
-		else fprintf(f, "%s\n", "");
-		fprintf(f, "%s\n", "");
-	}
-	fclose(f);
-}
-
-void
-WebCrawler::writeWordFile(const char *wordFileName)
-{
-	FILE *file = fopen(wordFileName, "w");
-
-	HashTableTemplateIterator<URLRecordList *> it(_wordToURLRecordList);
-	const char *key;
-	URLRecordList *data;
-	int j = -1;
-
-	while(it.next(key, data)) {
-		fprintf(file, "%s ", key);
-		URLRecordList *curr = data;
-		while (curr != NULL) {
-			if (j != curr->_urlRecordIndex) {
-				fprintf(file, "%d ", curr->_urlRecordIndex);
-			}
-			j = curr->_urlRecordIndex;
-			curr = curr->_next;
-		}
-		fprintf(file, "\n");
-		
-	}
-	fclose(file);
 }
 
 int main(int argc, char **argv) {
