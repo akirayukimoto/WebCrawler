@@ -41,82 +41,261 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 	_wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
 }
 
-char *buffer = new char[10000];
+//char *buffer = new char[10000];
 //char *buffer = (char *)malloc(sizeof(char) * 10000);
-char *ptr = buffer;
+//char *ptr = buffer;
 
-void 
-WebCrawler::onContentFound(char c) {
+//void 
+//WebCrawler::onContentFound(char c) {
 	
-	if (c == '[') {
-		*ptr = '\0';
-		ptr = buffer;
-		if (_urlArray[_headURL]._description == NULL) 
-			_urlArray[_headURL]._description = strdup(ptr);
-		else {
-			strcat(_urlArray[_headURL]._description, " ");
-			strcat(_urlArray[_headURL]._description, ptr);
-		}
-		
+//	if (c == '[') {
+//		*ptr = '\0';
+//		ptr = buffer;
+//		if (_urlArray[_headURL]._description == NULL) 
+//			_urlArray[_headURL]._description = strdup(ptr);
+//		else {
+//			strcat(_urlArray[_headURL]._description, " ");
+//			strcat(_urlArray[_headURL]._description, ptr);
+//		}
+//		
+//	}
+//	else if (c == ']') {
+//		memset(buffer, 0, strlen(buffer));
+//		ptr = buffer;
+//	}
+//	else if (c == '"') {
+//		//return;
+//	}
+//	else {
+//		*ptr = c;
+//		ptr++;
+//	}
+//}
+
+void
+WebCrawler::onContentFound(char c) {
+	if (word == NULL) {
+		word = new char[1];
+		word[0] = '\0';
 	}
-	else if (c == ']') {
-		memset(buffer, 0, strlen(buffer));
-		ptr = buffer;
+	if (description == NULL) {
+		description = new char[1];
+		description = '\0';
 	}
-	else if (c == '"') {
-		//return;
+	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c < '9')) {
+		char *s = new char[2];
+		s[0] = c;
+		s[1] = '\0';
+		char *tmp = strcat(word, s);
+		strcpy(word, tmp);
 	}
 	else {
-		*ptr = c;
-		ptr++;
+        	if (word == NULL || slength(word) <= 0) return;
+
+        	URLRecordList *tmp = NULL;        
+
+        	if (_wordToURLRecordList->find(word, &tmp) == false) {
+
+            	URLRecordList *data = new URLRecordList();
+            	data->_urlRecordIndex = _headURL;
+            	data->_next = NULL;
+            	_wordToURLRecordList->insertItem(word, data);
+        	}
+
+       		else {
+
+            	URLRecordList *data = new URLRecordList();
+            	data->_urlRecordIndex = _headURL;
+            	data->_next = tmp;
+
+            	_wordToURLRecordList->insertItem(word, data);
+
+        	}
+        	word = NULL;
 	}
 }
 
-char *bss;
-int flag1 = 0;
-int flag2 = 0;
+//char *bss;
+//int flag1 = 0;
+//int flag2 = 0;
+
+//void
+//WebCrawler::onAnchorFound(char *url) {
+//	if (_tailURL >= _maxUrls) return;
+//	const char *http = "http://";
+//	const char *https = "https://";
+//	const char *slash = "//";
+//	const char *hashtag = "#";
+//	bss = new char[200];
+
+//	if (strncmp(http, url, 7) == 0) {
+//		for (int i = 0; i < _tailURL; i++) {
+//			if (strcmp(url, _urlArray[i]._url) == 0) {
+//				flag1 = 1;
+//				break;
+//			}
+//		}
+//		if (flag1 == 1) {
+//			flag1 = 0;
+//			return;
+//		}
+//		else {
+//			_urlArray[_tailURL]._url = strdup(url);
+//			_tailURL++;
+//		}
+//	}
+//	else if (strncmp(url, slash, 2) == 0) {
+//		//return;
+//	}
+//	else {
+//		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
+//			bss = strdup(_urlArray[_headURL]._url);
+//			if (strncmp(url, "/", 1)) 
+//				bss = strcat(bss, "/");
+//			bss = strcat(bss, url);
+//			_urlArray[_tailURL]._url = strdup(bss);
+//			_urlArray[_tailURL]._description = NULL;
+//			_tailURL++;
+//		}
+//	}
+
+
+
+//}
 
 void
-WebCrawler::onAnchorFound(char *url) {
-	if (_tailURL >= _maxUrls) return;
-	const char *http = "http://";
-	const char *https = "https://";
-	const char *slash = "//";
-	const char *hashtag = "#";
-	bss = new char[200];
 
-	if (strncmp(http, url, 7) == 0) {
-		for (int i = 0; i < _tailURL; i++) {
-			if (strcmp(url, _urlArray[i]._url) == 0) {
-				flag1 = 1;
-				break;
-			}
-		}
-		if (flag1 == 1) {
-			flag1 = 0;
-			return;
-		}
-		else {
-			_urlArray[_tailURL]._url = strdup(url);
-			_tailURL++;
-		}
-	}
-	else if (strncmp(url, slash, 2) == 0) {
-		//return;
-	}
-	else {
-		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
-			bss = strdup(_urlArray[_headURL]._url);
-			if (strncmp(url, "/", 1)) 
-				bss = strcat(bss, "/");
-			bss = strcat(bss, url);
-			_urlArray[_tailURL]._url = strdup(bss);
-			_urlArray[_tailURL]._description = NULL;
-			_tailURL++;
-		}
-	}
+WebCrawler::onAnchorFound(char *url)
 
+{
 
+    //  Find all the hyperlinks of this document and add them to the
+
+        //    _urlArray and _urlToUrlRecord if they are not already in the
+
+        //    _urlToUrlRecord. Only insert up to _maxURL entries.
+
+    
+
+    if (inserted >= _maxUrls)
+
+        return;
+
+    
+
+    char *root = _urlArray[_headURL]._url;
+
+    
+
+    // append trailing slash to root url
+
+    if (root[slength(root) - 1] != '/')
+
+    {
+
+        root = strcat(root, "/");
+
+    }
+
+    
+
+    // check if this is an absolute url
+
+    if (url[0] == '/')
+
+    {
+
+        // chop off the directory structure
+
+        int count;
+
+        count = 0;
+
+        
+
+        int i;
+
+        for (i = 0; i < slength(root); i++)
+
+        {
+
+            if (root[i] == '/')
+
+                count = count + 1;
+
+            else
+
+                continue;
+
+            
+
+            if (count >= 3)
+
+            {
+
+                root[i] = '\0';
+
+                break;
+
+            }
+
+        }
+
+        
+
+        url = strcat(root, url);
+
+    }
+
+    else
+
+    {
+
+        char *http = "http://";
+
+        char *https = "https://";
+
+        
+
+        if (strncmp(url, http, 7) != 0 &&
+
+            strncmp(url, https, 8) != 0)
+
+        {
+
+            url = strcat(root, url);
+
+        }
+
+    }
+
+    
+
+    char *absoluteURL = new char[slength(url) + 1];
+
+    strcpy(absoluteURL, url);
+
+    
+
+    int tmp;
+
+    if (_urlToUrlRecord->find(absoluteURL, &tmp) == false)
+
+    {
+
+        _urlArray[_tailURL]._url = absoluteURL;
+
+        _urlArray[_tailURL]._description = NULL;
+
+        _tailURL = _tailURL + 1;
+
+        
+
+        _urlToUrlRecord->insertItem(absoluteURL, _headURL);
+
+        inserted = inserted + 1;
+
+    }
 
 }
 
