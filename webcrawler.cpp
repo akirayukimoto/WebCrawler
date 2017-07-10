@@ -251,7 +251,7 @@ int main(int argc, char **argv) {
 	int inserted = 0;
 	int start = 1;
 	const char **initialUrls;
-	if (!strcmp(argv[1], "-u") {
+	if (!strcmp(argv[1], "-u")) {
 		maxUrls = atoi(argv[2]);
 		start = 3;
 	}
