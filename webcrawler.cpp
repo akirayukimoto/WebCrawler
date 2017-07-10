@@ -72,7 +72,7 @@ WebCrawler::onContentFound(char c) {
 
 void
 WebCrawler::onAnchorFound(char *url) {
-	if (_tailURL >= _maxURL) return;
+	if (_tailURL >= _maxUrls) return;
 }
 
 void
