@@ -288,9 +288,9 @@ WebCrawler::crawl()
 	//}
 	insertWord();
 	//_urlArray[_headURL]._description = strdup(description);
-	const char *urlFile = "url.txt";
-	writeURLFile(urlFile);
-	writeWordFile("word.txt");
+	//const char *urlFile = "url.txt";
+	//writeURLFile(urlFile);
+	//writeWordFile("word.txt");
 
 }
 
@@ -315,5 +315,7 @@ int main(int argc, char **argv) {
 
 	WebCrawler *crawler = new WebCrawler(maxUrls, (argc - start), initialUrls);
 	crawler->crawl();
+	crawler->writeURLFile("url.txt");
+	crawler->writeWordFile("word.txt");
 	
 }
