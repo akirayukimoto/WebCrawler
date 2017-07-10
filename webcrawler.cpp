@@ -70,9 +70,51 @@ WebCrawler::onContentFound(char c) {
 	}
 }
 
+char *bss;
+int flag1 = 0;
+int flag2 = 0;
+
 void
 WebCrawler::onAnchorFound(char *url) {
 	if (_tailURL >= _maxUrls) return;
+	const char *http = "http://";
+	const char *https = "https://";
+	const char *slash = "//";
+	const char *hashtag = "#";
+	bss = new char[200];
+
+	if (!strncmp(http, url, 7)) {
+		for (int i = 0; i < _tailURL; i++) {
+			if (!strcmp(url, _urlArray[i]._url)) {
+				flag1 = 1;
+				break;
+			}
+		}
+		if (flag1 == 1) {
+			flag1 = 0;
+			return;
+		}
+		else {
+			_urlArray[i]._url = strdup(url);
+			_tailURL++;
+		}
+	}
+	else if (!strncmp(slash, url, 2)) {
+		return;
+	}
+	else {
+		if (strncmp(https, url, 8) && strncmp(hashtag, url, 1)) {
+			bss = strdup(_urlArray[_headURL]._url);
+			if (strncmp(url, "/", 1)) bss = strcat(bss, "/");
+			bss = strcat(bss, url);
+			_urlArray[_tailURL]._url = strdup(bss);
+			_urlArray[_tailURL]._description = NULL;
+			_tailURL++;
+		}
+	}
+
+
+
 }
 
 void
