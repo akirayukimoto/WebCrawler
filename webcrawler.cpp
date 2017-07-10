@@ -267,7 +267,7 @@ WebCrawler::crawl()
 		char *curr = _urlArray[_headURL]._url;
 		
 		int n = 0;
-		char *buffer = fetchHTML(buffer, &n);
+		char *buffer = fetchHTML(curr, &n);
 		if (buffer == NULL) {
 			_headURL++;
 			continue;
