@@ -5,7 +5,7 @@
 
 int i = 0;
 char *c = new char[500];
-int index;
+int ind;
 
 SimpleHTMLParser::SimpleHTMLParser()
 {
@@ -58,7 +58,7 @@ SimpleHTMLParser::parse(char * buffer, int n)
 			else if(match(&b, "<META CONTENT=\"")) {
 				state = METACF;
 				memset(c, 0, 500*sizeof(char));
-				index = 0;
+				ind = 0;
 			}
 			else if(match(&b, "<META NAME=\"DESCRIPTION\" CONTENT=\"")) {
 				state = METANF;
@@ -237,12 +237,12 @@ SimpleHTMLParser::parse(char * buffer, int n)
 				char d = *b;
 				if (!(('a'<= d && d <= 'z') || ('A' <= d && d <= 'Z') || ('0' <= d && d <= '9'))) {
 					if (!lastCharSpace) {
-						c[index++] = ' ';
+						c[ind++] = ' ';
 					}
 					lastCharSpace = true;
 				}
 				else {
-					c[index++] = *b;
+					c[ind++] = *b;
 					lastCharSpace = false;
 				}
 				b++;
