@@ -8,6 +8,17 @@ char *description;
 
 int inserted;
 
+
+int e = 0;
+
+char *desc = (char*)malloc(10000*sizeof(char));
+
+char *getWord = new char[20];
+
+int ccount=0;
+
+int count = 0;
+
 //call of duty modern warfare mac
 
 int
