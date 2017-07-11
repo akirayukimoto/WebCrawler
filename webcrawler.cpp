@@ -11,7 +11,7 @@ int inserted;
 
 int e = 0;
 
-char *desc = (char*)malloc(10000*sizeof(char));
+char *descrption = (char*)malloc(10000*sizeof(char));
 
 char *getWord = new char[20];
 
@@ -216,10 +216,10 @@ void WebCrawler::onContentFound(char c)
 
 	}
 	else {
-		desc[count] = '\0';
+		description[count] = '\0';
 		count = 0;
-		if(desc!=NULL) {
-			_urlArray[_headURL]._description = strdup(desc);
+		if(description!=NULL) {
+			_urlArray[_headURL]._description = strdup(description);
 
 		}
 	}
