@@ -1,126 +1,260 @@
 #include "webcrawler.h"
 
+#include "SimpleHTMLParser.h"
 
+int e = 0;
 
-// Add your implementation here
+char *desc = (char*)malloc(10000*sizeof(char));
 
-
-
-int urlRecNum = 0;
+char *getWord = new char[20];
 
 char *word;
 
-//char *description;
+int ccount=0;
 
-int inserted;
+int count = 0;
 
-URLRecord * _urlArray;
+// Add your implementation here
 
-char * bss;
+WebCrawler::WebCrawler(int maxUrls, int nInitialURls,  const char ** initialURLs)
 
-int flagone = 0;
+{
 
-int flagtwo = 0;
+	// Allocate space for _urlArray
 
-int mi = 0;
+	_headURL = 0;
 
-//char * ptr;
+    _urlToUrlRecord = new HashTableTemplate<int>();
 
-char * buffert = (char *) malloc (10000 * sizeof(char));
+    _wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
 
-char * ptr = buffert;
+	_urlArray = new URLRecord[maxUrls];
 
+	// insert the initialURls
 
+	//printf("%d\n", nInitialURls);
 
-//call of duty modern warfare mac
+	for (int i = 0; i < nInitialURls; i++) {
 
+		_urlArray[i]._url = strdup(initialURLs[i]);
 
+		//_urlArray[i]._description = "";
 
-void WebCrawler::onContentFound(char c) {
+		_urlToUrlRecord -> insertItem(_urlArray[i]._url, i);
 
-	//TITLE Tag title extraction
+	}
 
-	if (c == '[') {
+	// Update _maxUrls, _headURL and _tailURL
 
-		*ptr = '\0';
+	_maxUrls = maxUrls;
 
-		ptr = buffert;
+	_tailURL = nInitialURls;
 
-		//printf("Title: %s\n", ptr);
+	
 
+}
 
+void WebCrawler::writeURLFile(const char * urlFileName){
 
-		if (_urlArray[_headURL]._description == NULL) {
+	remove(urlFileName);
 
-			//printf("Atleast it comes here! %d\n", _headURL);
+	FILE *fd = fopen(urlFileName, "a");
 
-			_urlArray[_headURL]._description = strdup(ptr);
+	for(int i = 0; i < _tailURL;i++) {
 
-			//printf("%s YOLOY\n", _urlArray[_headURL]._description);
+			fprintf(fd, "%d ",e++);
 
-		} else {
+			fprintf(fd, "%s\n", _urlArray[i]._url);
 
-			strcat(_urlArray[_headURL]._description, " ");
-
-			strcat(_urlArray[_headURL]._description, ptr);
-
-			//printf("%s YOLOY\n", _urlArray[_headURL]._description);
+			fprintf(fd, "%s\n", _urlArray[i]._description);
 
 		}
 
-		
 
-	} else if (c == ']') {
-
-		memset(buffert,0,strlen(buffert));
-
-		ptr = buffert;
-
-	} else if (c == '"'){
-
-		//Do nothing
-
-	} else {
-
-		*ptr = c;
-
-		ptr++;
-
-	}
 
 }
 
 
 
-void WebCrawler::onAnchorFound(char * url) {
+void WebCrawler::writeWordFile(const char *wordFileName) {
 
-	if (_tailURL >= _maxUrls) {
+	remove(wordFileName);
 
-		return;
+	FILE *fd = fopen(wordFileName, "a");
+
+	HashTableTemplateIterator<URLRecordList*> iterator(_wordToURLRecordList);
+
+	const char *key;
+
+	URLRecordList *e;
+
+	while (iterator.next(key, e)) {
+
+    	fprintf(fd, "%s ",key);
+
+		while(e!= NULL) {
+
+			fprintf(fd, "%d ", e-> _urlRecordIndex);
+
+			e = e -> _next;
+
+		}
+
+		fprintf(fd,"\n"); 
+
+    
+
+  }
+
+
+
+}
+
+void WebCrawler::onContentFound(char c)
+
+{ 	
+
+	if ('A' <= c && c <= 'Z')
+
+		c = c + 32;
+
+	if(c != '*'){
+
+		desc[count] = c;
+
+		count++;
+
+		if(c!= '\t' && c!=' ' && c!= '\n' && c!= '\0') {
+
+			getWord[ccount] = c;
+
+			ccount++;
+
+		}		
+
+		else {
+
+			getWord[ccount] = '\0';
+
+			word = strdup(getWord);
+
+			ccount = 0;
+
+			URLRecordList *prev = NULL;    
+
+			if (strcmp(word,"")) {    
+
+        	if (_wordToURLRecordList->find(word, &prev) == false)
+
+        	{
+
+            	URLRecordList *e = new URLRecordList();
+
+            	e -> _urlRecordIndex = _headURL;
+
+            	e -> _next = NULL;
+
+            	_wordToURLRecordList->insertItem(word, e);
+
+        	}
+
+        	else
+
+        	{	
+
+				int flag = 0;
+
+				URLRecordList *tmp = prev;
+
+				while (tmp!=NULL) {
+
+					if(tmp -> _urlRecordIndex == _headURL) {
+
+						flag = 1;						
+
+						break;
+
+					}
+
+				tmp = tmp -> _next;
+
+				}
+
+					if (flag == 0) {
+
+            			URLRecordList *e = new URLRecordList();
+
+            			e -> _urlRecordIndex = _headURL;
+
+            			e -> _next = prev;
+
+						_wordToURLRecordList->insertItem(word, e);
+
+            		}
+
+				}}		
+
+		}
 
 	}
 
-	
+	else {
 
-	const char * http = "http://";
+		desc[count] = '\0';
 
-	const char * https = "https://";
+		count = 0;
 
-	const char * yol = "//";
+		if(desc!=NULL) {
 
-	const char * hashtag = "#";
+			//printf("abhiga\n");
 
-	bss = new char[200];
+			_urlArray[_headURL]._description = strdup(desc);
 
+		}
 
+	}
 
-	if (strncmp(http, url, 7) == 0) {
+}
 
-		for (int i = 0; i < _tailURL; i++) {
+void WebCrawler::onAnchorFound(char * url){
 
-			if (strcmp(url, _urlArray[i]._url) == 0) {
+	char *finalurl;	
 
-				flagone = 1;
+	char *temp = (char *)malloc(1000*sizeof(char));
+
+	memset(temp,0,1000*sizeof(char));
+
+	bool flag = true;	
+
+	if(_tailURL >= _maxUrls)
+
+		return;
+
+	//check if the absolute URL starts with http
+
+	else if(strncmp(url,"http://", strlen("http://")) == 0) {
+
+		strcpy(temp,url);
+
+	}
+
+	else if(strncmp(url,"//",strlen("//")) == 0) {
+
+		strcpy(temp,"http:");
+
+		strcat(temp,url);
+
+	}
+
+	else if(strncmp(url,"/",strlen("/")) == 0) {
+
+		strcpy(temp, _urlArray[_headURL]._url);
+
+		for(int i = 10; i < strlen(temp); i++) {
+
+			if(temp[i] == '/') {
+
+				temp[i] = '\0';
 
 				break;
 
@@ -128,686 +262,214 @@ void WebCrawler::onAnchorFound(char * url) {
 
 		}
 
-		if (flagone == 1) {
+		strcat(temp,url);
 
-			flagone = 0;
+		
 
-			return;
+	}
 
-		} else {
+	//previous comments
 
-			_urlArray[_tailURL]._url = strdup(url);
+	/*else if((('a' <= url[0] && url[0] <= 'z')||('A' <= url[0] && url[0] <= 'Z')) && (strncmp(url,"https://",(strlen("https://"))) !=0) && (strncmp(url,"ftp://",(strlen("ftp://"))) !=0)&& (strncmp(url,"mailto:",(strlen("mailto:"))) !=0)) {
 
-			_tailURL++;
+		strcpy(temp, _urlArray[_headURL]._url);
 
-			//printf("\n\n%s : Yolo Updated URL\n\n", _urlArray[_tailURL - 1]._url);
+		for(int i = strlen(temp)-1; i > 8; i--) {
 
-		}
+			if(temp[i] =='/') {
 
-	} else if (strncmp(url, yol, 2) == 0) {
+				temp[i+1] = '\0';
 
-	} else {
+				//strcat(temp,"/");
 
-		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
+				strcat(temp,url);
 
-			bss = strdup(_urlArray[_headURL]._url);
+				//printf("abhiga\n");	
 
-			if (strncmp(url, "/", 1)) {
-
-				bss = strcat(bss, "/");
+				break;
 
 			}
 
-			bss = strcat(bss, url);
-
-			_urlArray[_tailURL]._url = strdup(bss);
-
-			_urlArray[_tailURL]._description = NULL;
-
-			_tailURL++;
-
-			//printf("\n\n%s : Yolo Updated URL\n\n", _urlArray[_tailURL - 1]._url);
-
 		}
 
-	}
+	}*/
 
-}
+	for (int i = 0; i< _tailURL; i++) {
 
+			//checking if the URL already exists in URL array
 
+			if(temp[strlen(temp)-1] =='/')
 
-char * yod = (char *) malloc (sizeof(char) * 1000);
+				temp[strlen(temp) - 1] = '\0';
 
-char * WebCrawler::nextWord(char * &c) {
+			finalurl = strdup(temp);
 
-	//memset(yod, 0, strlen(yod));
+			if(strcmp(finalurl, _urlArray[i]._url)==0) {
 
-	int i = 0;
+				flag = false;
 
-	//if (c == NULL) {
-
-	//	return NULL;
-
-	//}
-
-	while (*c != '\0') {
-
-		//printf("I'm in!\n");
-
-		if (*c == ' ' || *c == '.' || *c == ',' || *c == '-') {
-
-			//printf("I'm out!\n");
-
-			if (i == 0) {
-
-				c++;
-
-				continue;
-
-			} else {
-
-				yod[i] = '\0';
-
-				return yod;
+				break;
 
 			}
 
-		} else {
+		}
 
-			//printf("I'm in!\n");
+		if(flag && strcmp(finalurl,"")) {
 
-			yod[i++] = *c;
+			//inserting this absolute URL
 
-			//printf("Am I in?\n");
+			_urlArray[_tailURL]._url = finalurl;
 
-			c++;
+		//	_urlArray[_tailURL]._description = "";
+
+			_urlToUrlRecord -> insertItem(finalurl,_tailURL);
+
+				//memset(desc,0,400*sizeof(char));
+
+			//count = 0;
+
+			_tailURL++;
 
 		}
 
-	}
-
-	if (i > 0) {
-
-		yod[i] = '\0';
-
-		return yod;
-
-	}
-
-	return NULL;
+		free(temp);
 
 }
 
+void WebCrawler::crawl()
 
 
 
+{	
 
+	int n;
 
+	//char * buffer;
 
-WebCrawler::WebCrawler(int maxUrls, int nInitialUrls, const char **initialUrls) {
+	while (_headURL <_tailURL) {
 
-	_maxUrls = maxUrls;
+		//Fetch the next URL in _headURL
 
-	_urlArray = new URLRecord[nInitialUrls + maxUrls];
+		char* buffer = fetchHTML(_urlArray[_headURL]._url, &n);
 
-	_headURL = 0;
+		
 
-	_tailURL = nInitialUrls;
+		//Increment _headURL
 
-	char * word = (char *) malloc (100 * sizeof(char));
+		
 
-	for (int i = 0; i < nInitialUrls; i++) {
+		//If the document is not text/html 
 
-		_urlArray[i]._url = strdup(initialUrls[i]);
+		if(buffer == NULL) {
 
-		_urlArray[i]._description = (char *) malloc (1000);
-
-		_urlArray[i]._description = NULL;
-
-	}
-
-
-
-	for (int i = 0; i < nInitialUrls + maxUrls; i++) {
-
-		_urlArray[i]._description = (char *) malloc (1000);
-
-	}
-
-	_urlToUrlRecord = new HashTableTemplate<int>;
-
-	_wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
-
-	//_wordRecordIterator  = new HashTableTemplateIterator<URLRecordList *>(_wordToURLRecordList);
-
-}
-
-
-
-void WebCrawler::writeURLFile(const char * urlFileName) {
-
-	FILE * file = fopen(urlFileName, "w");
-
-	for (int i = 0; i < _tailURL; i++) {
-
-		fprintf(file, "%d %s\n", i, _urlArray[i]._url);
-
-		//if (_urlArray[i]._description != NULL) {
-
-			printf("YH\n");
-
-			printf("%s\n", _urlArray[i]._description);
-
-			fprintf(file, "%s\n", _urlArray[i]._description);
-
-		///} else {
-
-		//	fprintf(file, "%s\n", "");
-
-		//}
-
-		fprintf(file, "\n");
-
-	}
-
-	fclose(file);
-
-}
-
-
-
-/*void
-
-WebCrawler::writeWordFile(const char *wordFileName)
-
-{
-
-    FILE *file;
-
-    file = fopen(wordFileName, "w");
-
-    
-
-    int *printed;
-
-    
-
-    int i;
-
-    for (i = 0; i < 2039; i++)
-
-    {
-
-        if (_wordToURLRecordList->_buckets[i] == NULL)
-
-            continue;
-
-        
-
-        fprintf(file, "%s", _wordToURLRecordList->_buckets[i]->_key);
-
-        
-
-        URLRecordList *curr = _wordToURLRecordList->_buckets[i]->_data;
-
-        
-
-        printed = new int[2039];
-
-        
-
-        int j;
-
-        for (j = 0; j < 2039; j++)
-
-        {
-
-            printed[j] = -1;
-
-        }
-
-        
-
-        while (curr != NULL)
-
-        {
-
-            if (curr->_urlRecordIndex < 0 ||
-
-                curr->_urlRecordIndex > 20390)
-
-            {
-
-                break;
-
-            }
-
-            
-
-            int found = 0;
-
-            for (j = 0; j < 2039; j++)
-
-            {
-
-                if (printed[j] < 0) break;
-
-                
-
-                if (printed[j] == curr->_urlRecordIndex)
-
-                {
-
-                    found = 1;
-
-                    break;
-
-                }
-
-            }
-
-            
-
-            if (found == 0)
-
-            {
-
-                fprintf(file, " %d", curr->_urlRecordIndex);
-
-                
-
-                for (j = 0; j < 2039; j++)
-
-                {
-
-                    if (printed[j] < 0)
-
-                    {
-
-                        printed[j] = curr->_urlRecordIndex;
-
-                        break;
-
-                    }
-
-                }
-
-            }
-
-            
-
-            curr = curr->_next;
-
-        }
-
-        
-
-        fprintf(file, "\n");
-
-    }
-
-    
-
-    fclose(file);
-
-}*/
-
-
-
-void WebCrawler::writeWordFile(const char * wordFileName) {
-
-	FILE * file = fopen(wordFileName, "w");
-
-
-
-	HashTableTemplateIterator<URLRecordList *> iterator(_wordToURLRecordList);
-
-
-
-	const char * key;
-
-	URLRecordList * data;
-
-	int yolo = -1;
-
-
-
-	while (iterator.next(key, data)) {
-
-		fprintf(file, "%s ", key);
-
-		URLRecordList * curr = data;
-
-		while (curr != NULL) {
-
-			if (yolo != curr->_urlRecordIndex) {
-
-			fprintf(file, "%d ", curr->_urlRecordIndex);}
-
-			yolo = curr->_urlRecordIndex;
-
-			curr = curr->_next;
-
-		}
-
-		fprintf(file, "\n");
-
-	}
-
-	fclose(file);
-
-}
-
-
-
-/*void WebCrawler::writeWordFile(const char * wordFileName) {
-
-	FILE * file = fopen(wordFileName, "w");
-
-	int j = 0;
-
-	for (int i = 0; i < 2039; i++) {
-
-		if (_wordToURLRecordList->_buckets[i] == NULL) {
+			_headURL++;
 
 			continue;
 
 		}
 
-		fprintf(file, "%s ", _wordToURLRecordList->_buckets[i]->_key);
+		parse(buffer,n);
 
-		URLRecordList * curr = NULL;
+		
 
+		//Get the first 500 characters (at most) of the document without tags. Add this 
 
+		//  description to theURL record for this URL.
 
-		curr = _wordToURLRecordList->_buckets[i]->_data;
+		//_urlArray[_headURL]._description = "empty";
 
-		fprintf(file, "%d ", curr->_urlRecordIndex);
+		_headURL++;
 
-		while (curr != NULL) {
+		//Find all the hyperlinks of this document and add them to the
 
-			fprintf(file, "%d ", curr->_urlRecordIndex);
+		//_urlArray and _urlToUrlRecord if they are not already in the
 
-			curr = curr->_next;
+		//_urlToUrlRecord. Only insert up to _maxURL entries.
 
-		}
+		//if(_tailURL == _maxUrls - 1)
 
-		fprintf(file, "\n");
+			//break;
+
+		//For each word in the document without tags, add the index of this URL to
+
+		//a URLRecordList in the _wordToURLRecordList table if the URL is not already there.
+
+		//while
+
+		//}
 
 	}
 
-	fclose(file);
+	/*for(int i = 0; i < _tailURL;i++) {
 
-}*/
+			printf("%d\n",e++);
 
+			printf("%s\n", _urlArray[i]._url);
 
+			printf("%s\n", _urlArray[i]._description);
 
-void WebCrawler::wordToHashTable() {
+		}*/
 
-	for (int i = 0; i < _tailURL; i++) {
-
-		if (_urlArray[i]._description != NULL) {
-
-			char * c;
-
-			URLRecordList *temp = NULL;
-
-			URLRecordList *curr;
-
-			char * yodo = _urlArray[i]._description;
-
-			while ((c = nextWord(yodo)) != NULL) {
-
-				//printf("%s\n", c);
-
-				if(_wordToURLRecordList->find(c, &temp) == false) {
-
-					URLRecordList *data = new URLRecordList();
-
-					data->_urlRecordIndex = i;
-
-					data->_next = temp;
-
-					printf("Added: %s\n", c);
-
-					_wordToURLRecordList->insertItem(c, data);
-
-				} else {
-
-					printf("The other place: %s\n", c);
-
-					int found = 0;
-
-					URLRecordList * tmp = temp;
-
-					while (tmp != NULL) {
-
-						if (tmp->_urlRecordIndex == i) {
-
-							found = 1;
-
-							break;
-
-						}
-
-						tmp = tmp->_next;
-
-					}
+}
 
 
 
-					if (found == 1) {
+int main (int argc, char** argv) {
 
-						//printf("Chutiya kaat raha hai %s\n", c);
+	if(argc<2)
 
-						found = 0;
+		fprintf(stderr,"Invalid Format\n");
 
-						continue;
+	else {
 
-					} else {
+		int count = 0;
 
-						printf("Yahan tak mai pahunch gaya hun: %s\n", c);
+		int maxURLs;
 
-						URLRecordList *data = new URLRecordList();
+		const char **initialURLs;
 
-						data->_urlRecordIndex = i;
+		if(strcmp(argv[1],"-u") == 0) {
 
-						data->_next = temp;
+			maxURLs = atoi(argv[2]);
 
-						_wordToURLRecordList->insertItem(c, data);
+			initialURLs = new const char*[argc - 3];
 
-					}
+			for (int i = 0 ; i < argc - 3; i++) {
 
-				}
+				initialURLs[i] = argv[i+3];
+
+				count++;
 
 			}
 
 		}
 
-	}
+		else {
 
-}
+			maxURLs = 1000;
 
+			initialURLs = new const char*[argc - 1];
 
+			for (int i = 0 ; i < argc -1; i++) {
 
-void WebCrawler::urlInHashTable() {
+				initialURLs[i] = argv[i+1];
 
-	for (int i = 0; i < _tailURL; i++) {
+				count++;
 
-		//printf("\nYOLO\n");
-
-		int temp;
-
-		if (_urlToUrlRecord->find(_urlArray[i]._url, &temp) == false) {
-
-			//printf("YOLO\n");
-
-			_urlToUrlRecord->insertItem(_urlArray[i]._url, i);
+			}
 
 		}
 
-	}
+		WebCrawler *w = new WebCrawler(maxURLs,count,initialURLs);
 
-}
+		w -> crawl();
 
+		w -> writeURLFile("url.txt");
 
-
-void WebCrawler::crawl() {
-
-	printf("Nice\n");
-
-    while (_headURL < _tailURL) {
-
-		printf("Nice in\n"); 
-
-		char *curr = _urlArray[_headURL]._url;
-
-		printf("Niceinone\n");
-
-        int n;
-
-		printf("Niceintwo\n");
-
-        char *buffer = fetchHTML(curr, &n);
-
-		printf("Niceinthree\n");
-
-        if (buffer == NULL) {
-
-            _headURL = _headURL + 1;
-
-            continue;
-
-        }
-
-        
-
-        parse(buffer, n);
-
-		//printf("\nIt comes here %d\n", _headURL);
-
-        _headURL = _headURL + 1;
-
-    }
-
-	
-
-	//Call URLmethod
-
-	printf("This Happens\n");
-
-	urlInHashTable();
-
-
-
-	//Testing nextWord
-
-
-
-	//printf("TestingNextWord\n");
-
-
-
-	//char * yo = (char *) malloc (10000);
-
-	//yo = strdup(_urlArray[0]._description);
-
-	//printf("%s\n", yo);
-
-	//char * c = (char *) malloc (10000);
-
-	//while ((c = nextWord(yo)) != NULL) {
-
-		//printf("%s\n", c);
-
-	//}
-
-	for (int i = 0; i < _tailURL; i++) {
-
-		printf("%i %s\n", i, _urlArray[i]._description);
+		w -> writeWordFile("word.txt");
 
 	}
 
-
-
-	printf("This also happens\n");
-
-	wordToHashTable();
-
-	printf("Does this happen?\n");
-
-	const char * alpha = "url.txt";
-
-	writeURLFile(alpha);
-
-	writeWordFile("word.txt");
-
-	//writeURLFile("url.txt");
-
-}
-
-
-
-int main (int argc, char ** argv) {
-
-	if (argc < 2) {
-
-		fprintf( stderr, "  Usage: webcrawler [-u <maxurls>] url-list\n");
-
-		exit(1);
-
-	}
-
-
-
-	int maxUrls = 45;
-
-
-
-	int inserted = 0;
-
-
-
-	int start = 1;
-
-	
-
-	const char ** initialUrls;
-
-
-
-	if (strcmp(argv[1], "-u") == 0) {
-
-		maxUrls = atoi(argv[2]);
-
-		start = 3;
-
-	}
-
-
-
-	initialUrls = new const char * [(argc - start)];
-
-
-
-	int i;
-
-
-
-	for (i = start; i < argc; i++) {
-
-		initialUrls[i - start] = argv[i];
-
-	}
-
-	WebCrawler * crawler = new WebCrawler(maxUrls, (argc - start), initialUrls);
-
-	crawler->crawl();
-
-	//crawler->writeURLFile("url.txt");
-
-	//crawler->writeWordFile("word.txt");
-
-	
+	return 0;
 
 }

@@ -421,3 +421,5 @@ After doing this, you may fix the identity used for this commit with:
 [master 70ffdb2] Commit web-crawler
  2 files changed, 815 insertions(+), 700 deletions(-)
  rewrite webcrawler2.cpp (71%)
+[master 00a045b] Commit web-crawler
+ 2 files changed, 7 insertions(+), 2 deletions(-)
