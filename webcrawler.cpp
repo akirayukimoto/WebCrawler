@@ -90,7 +90,7 @@ WebCrawler::onContentFound(char c) {
 		strcpy(word, tmp);
 	}
 	else {
-        	if (word == NULL || slength(word) <= 0) return;
+        	if (word == NULL || strlen(word) <= 0) return;
 
         	URLRecordList *tmp = NULL;        
 
