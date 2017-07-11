@@ -251,9 +251,9 @@ WebCrawler::onAnchorFound(char *url)
 
     {
 
-        char *http = "http://";
+        const char *http = "http://";
 
-        char *https = "https://";
+        const char *https = "https://";
 
         
 
