@@ -21,7 +21,7 @@ bool
 SimpleHTMLParser::parse(char * buffer, int n)
 {
 	enum { START, TAG, SCRIPT, ANCHOR, HREF,
-	       COMMENT, FRAME, SRC } state;
+	       COMMENT, FRAME, SRC, TITLE, METACF, METANF } state;
 
 	state = START;
 	
@@ -43,6 +43,15 @@ SimpleHTMLParser::parse(char * buffer, int n)
 			}
 			else if (match(&b,"<FRAME ")) {
 				state = FRAME;
+			}
+			else if (match(&b, "<TITLE ")) {
+				state = TITLE;
+			}
+			else if(match(&b, "<METACF ") {
+				state = METACF;
+			}
+			else if(match(&b, "<METANF ") {
+				state = METANF;
 			}
 			else if	(match(&b,"<")) {
 				state = TAG;
