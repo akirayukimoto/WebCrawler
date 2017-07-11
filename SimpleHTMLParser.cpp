@@ -5,7 +5,7 @@
 
 int i = 0;
 char *c = new char[500];
-int count;
+int index;
 
 SimpleHTMLParser::SimpleHTMLParser()
 {
@@ -237,12 +237,12 @@ SimpleHTMLParser::parse(char * buffer, int n)
 				char d = *b;
 				if (!(('a'<= d && d <= 'z') || ('A' <= d && d <= 'Z') || ('0' <= d && d <= '9'))) {
 					if (!lastCharSpace) {
-						c[count++] = ' ';
+						c[index++] = ' ';
 					}
 					lastCharSpace = true;
 				}
 				else {
-					c[count++] = *b;
+					c[index++] = *b;
 					lastCharSpace = false;
 				}
 				b++;
