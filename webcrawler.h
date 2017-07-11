@@ -45,11 +45,11 @@ class WebCrawler : public SimpleHTMLParser {
   char *nextWord(char * &c);
   
   // Add urls into _urlToRecord
-  void insertURL();
+  //void insertURL();
   //void urlInHashTable();
 
   // Add words to wordToURLRecordList
-  void insertWord();
+  //void insertWord();
   //void wordToHashTable();
 
   // crawl the web

@@ -42,7 +42,7 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 
 }
 
-
+/*
 void
 WebCrawler::insertURL() {
 	for (int i = 0; i < _tailURL; i++) {
@@ -126,7 +126,7 @@ WebCrawler::insertWord() {
 		}
 	}
 }
-
+*/
 void
 WebCrawler::writeURLFile(const char *urlFileName)
 {
@@ -171,203 +171,103 @@ WebCrawler::writeWordFile(const char *wordFileName)
 }
 
 void WebCrawler::onContentFound(char c)
-
 { 	
-
 	if ('A' <= c && c <= 'Z')
-
 		c = c + 32;
-
 	if(c != '*'){
-
 		desc[count] = c;
-
 		count++;
-
 		if(c!= '\t' && c!=' ' && c!= '\n' && c!= '\0') {
-
 			getWord[ccount] = c;
-
 			ccount++;
-
 		}		
-
 		else {
-
 			getWord[ccount] = '\0';
-
 			word = strdup(getWord);
-
 			ccount = 0;
-
 			URLRecordList *prev = NULL;    
-
 			if (strcmp(word,"")) {    
-
-        	if (_wordToURLRecordList->find(word, &prev) == false)
-
-        	{
-
-            	URLRecordList *e = new URLRecordList();
-
-            	e -> _urlRecordIndex = _headURL;
-
-            	e -> _next = NULL;
-
-            	_wordToURLRecordList->insertItem(word, e);
-
-        	}
-
-        	else
-
-        	{	
-
-				int flag = 0;
-
-				URLRecordList *tmp = prev;
-
-				while (tmp!=NULL) {
-
-					if(tmp -> _urlRecordIndex == _headURL) {
-
-						flag = 1;						
-
-						break;
-
+        			if (!_wordToURLRecordList->find(word, &prev)) {
+            				URLRecordList *data = new URLRecordList();
+         				data -> _urlRecordIndex = _headURL;
+            				data -> _next = NULL;
+            				_wordToURLRecordList->insertItem(word, data);
+        			}
+        			else {	
+					int flag = 0;
+					URLRecordList *tmp = prev;
+					while (tmp!=NULL) {
+						if(tmp -> _urlRecordIndex == _headURL) {
+							flag = 1;
+							break;
+						}
+						tmp = tmp -> _next;
 					}
-
-				tmp = tmp -> _next;
-
-				}
-
 					if (flag == 0) {
-
-            			URLRecordList *e = new URLRecordList();
-
-            			e -> _urlRecordIndex = _headURL;
-
-            			e -> _next = prev;
-
-						_wordToURLRecordList->insertItem(word, e);
-
-            		}
-
-				}}		
+            					URLRecordList *data = new URLRecordList();
+            					data -> _urlRecordIndex = _headURL;
+            					data -> _next = prev;
+						_wordToURLRecordList->insertItem(word, data);
+            				}
+				}
+			}		
 
 		}
 
 	}
-
 	else {
-
 		desc[count] = '\0';
-
 		count = 0;
-
 		if(desc!=NULL) {
-
-			//printf("abhiga\n");
-
 			_urlArray[_headURL]._description = strdup(desc);
 
 		}
-
 	}
-
 }
 
 void WebCrawler::onAnchorFound(char * url){
-
 	char *finalurl;	
-
 	char *temp = (char *)malloc(1000*sizeof(char));
-
 	memset(temp,0,1000*sizeof(char));
-
-	bool flag = true;	
-
-	if(_tailURL >= _maxUrls)
-
-		return;
-
-	//check if the absolute URL starts with http
-
-	else if(strncmp(url,"http://", strlen("http://")) == 0) {
-
+	bool flag = true;
+	const char http = "http://";
+	if(_tailURL >= _maxUrls) return;
+	else if(strncmp(url, http, strlen("http://")) == 0) {
 		strcpy(temp,url);
-
 	}
-
 	else if(strncmp(url,"//",strlen("//")) == 0) {
-
 		strcpy(temp,"http:");
-
 		strcat(temp,url);
-
 	}
-
 	else if(strncmp(url,"/",strlen("/")) == 0) {
-
 		strcpy(temp, _urlArray[_headURL]._url);
-
 		for(int i = 10; i < strlen(temp); i++) {
-
 			if(temp[i] == '/') {
-
 				temp[i] = '\0';
-
 				break;
-
 			}
-
 		}
-
 		strcat(temp,url);
-
-		
-
 	}
-
 	for (int i = 0; i< _tailURL; i++) {
-
-			//checking if the URL already exists in URL array
-
-			if(temp[strlen(temp)-1] =='/')
-
-				temp[strlen(temp) - 1] = '\0';
-
+		//checking if the URL already exists in URL array
+		if(temp[strlen(temp)-1] =='/')
+			temp[strlen(temp) - 1] = '\0';
 			finalurl = strdup(temp);
-
 			if(strcmp(finalurl, _urlArray[i]._url)==0) {
-
 				flag = false;
-
 				break;
-
 			}
-
 		}
-
 		if(flag && strcmp(finalurl,"")) {
-
 			//inserting this absolute URL
-
 			_urlArray[_tailURL]._url = finalurl;
-
 		//	_urlArray[_tailURL]._description = "";
-
 			_urlToUrlRecord -> insertItem(finalurl,_tailURL);
-
-				//memset(desc,0,400*sizeof(char));
-
 			//count = 0;
-
 			_tailURL++;
-
 		}
-
 		free(temp);
-
 }
 
 void
