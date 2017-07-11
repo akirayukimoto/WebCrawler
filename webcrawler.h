@@ -1,6 +1,10 @@
 
 // CS251 Definitions for web-crawler
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "openhttp.h"
 #include "HashTableTemplate.h"
 #include "SimpleHTMLParser.h"
@@ -41,12 +45,12 @@ class WebCrawler : public SimpleHTMLParser {
   char *nextWord(char * &c);
   
   // Add urls into _urlToRecord
-  //void insertURL();
-  void urlInHashTable();
+  void insertURL();
+  //void urlInHashTable();
 
   // Add words to wordToURLRecordList
-  //void insertWord();
-  void wordToHashTable();
+  void insertWord();
+  //void wordToHashTable();
 
   // crawl the web
   void crawl();
