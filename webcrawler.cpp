@@ -7,18 +7,177 @@
 
 // Add your implementation here
 
+//char *word;
+//char *description;
+
+//int inserted;
+
+int urlRecNum = 0;
+
 char *word;
-char *description;
+
+//char *description;
 
 int inserted;
 
-int
-strlength(const char *str) {
-	int len = 0;
-	while (str[len]) {
-		len++;
+URLRecord * _urlArray;
+
+char * bss;
+
+int flagone = 0;
+
+int flagtwo = 0;
+
+int mi = 0;
+
+//char * ptr;
+
+char * buffert = (char *) malloc (10000 * sizeof(char));
+
+char * ptr = buffert;
+
+
+
+//call of duty modern warfare mac
+
+
+
+void WebCrawler::onContentFound(char c) {
+
+	//TITLE Tag title extraction
+
+	if (c == '[') {
+
+		*ptr = '\0';
+
+		ptr = buffert;
+
+		//printf("Title: %s\n", ptr);
+
+
+
+		if (_urlArray[_headURL]._description == NULL) {
+
+			//printf("Atleast it comes here! %d\n", _headURL);
+
+			_urlArray[_headURL]._description = strdup(ptr);
+
+			//printf("%s YOLOY\n", _urlArray[_headURL]._description);
+
+		} else {
+
+			strcat(_urlArray[_headURL]._description, " ");
+
+			strcat(_urlArray[_headURL]._description, ptr);
+
+			//printf("%s YOLOY\n", _urlArray[_headURL]._description);
+
+		}
+
+		
+
+	} else if (c == ']') {
+
+		memset(buffert,0,strlen(buffert));
+
+		ptr = buffert;
+
+	} else if (c == '"'){
+
+		//Do nothing
+
+	} else {
+
+		*ptr = c;
+
+		ptr++;
+
 	}
-	return len;
+
+}
+
+
+
+void WebCrawler::onAnchorFound(char * url) {
+
+	if (_tailURL >= _maxUrls) {
+
+		return;
+
+	}
+
+	
+
+	const char * http = "http://";
+
+	const char * https = "https://";
+
+	const char * yol = "//";
+
+	const char * hashtag = "#";
+
+	bss = new char[200];
+
+
+
+	if (strncmp(http, url, 7) == 0) {
+
+		for (int i = 0; i < _tailURL; i++) {
+
+			if (strcmp(url, _urlArray[i]._url) == 0) {
+
+				flagone = 1;
+
+				break;
+
+			}
+
+		}
+
+		if (flagone == 1) {
+
+			flagone = 0;
+
+			return;
+
+		} else {
+
+			_urlArray[_tailURL]._url = strdup(url);
+
+			_tailURL++;
+
+			//printf("\n\n%s : Yolo Updated URL\n\n", _urlArray[_tailURL - 1]._url);
+
+		}
+
+	} else if (strncmp(url, yol, 2) == 0) {
+
+	} else {
+
+		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
+
+			bss = strdup(_urlArray[_headURL]._url);
+
+			if (strncmp(url, "/", 1)) {
+
+				bss = strcat(bss, "/");
+
+			}
+
+			bss = strcat(bss, url);
+
+			_urlArray[_tailURL]._url = strdup(bss);
+
+			_urlArray[_tailURL]._description = NULL;
+
+			_tailURL++;
+
+			//printf("\n\n%s : Yolo Updated URL\n\n", _urlArray[_tailURL - 1]._url);
+
+		}
+
+	}
+
 }
 
 WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
@@ -81,48 +240,7 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 //	}
 //}
 
-void
-WebCrawler::onContentFound(char c) {
-	if (word == NULL) {
-		word = new char[1];
-		word[0] = '\0';
-	}
-	if (description == NULL) {
-		description = new char[1];
-		description = '\0';
-	}
-	if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c < '9')) {
-		char *s = new char[2];
-		s[0] = c;
-		s[1] = '\0';
-		char *tmp = strcat(word, s);
-		strcpy(word, tmp);
-	}
-	else {
-        	if (word == NULL || strlength(word) <= 0) return;
 
-        	URLRecordList *tmp = NULL;        
-
-        	if (_wordToURLRecordList->find(word, &tmp) == false) {
-
-            	URLRecordList *data = new URLRecordList();
-            	data->_urlRecordIndex = _headURL;
-            	data->_next = NULL;
-            	_wordToURLRecordList->insertItem(word, data);
-        	}
-
-       		else {
-
-            	URLRecordList *data = new URLRecordList();
-            	data->_urlRecordIndex = _headURL;
-            	data->_next = tmp;
-
-            	_wordToURLRecordList->insertItem(word, data);
-
-        	}
-        	word = NULL;
-	}
-}
 
 //char *bss;
 //int flag1 = 0;
