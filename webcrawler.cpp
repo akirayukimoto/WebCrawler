@@ -7,176 +7,305 @@
 
 // Add your implementation here
 
-//char *word;
-//char *description;
-
-//int inserted;
-
-int urlRecNum = 0;
-
 char *word;
-
 char *description;
 
 int inserted;
 
-URLRecord * _urlArray;
-
-char * bss;
-
-int flagone = 0;
-
-int flagtwo = 0;
-
-int mi = 0;
-
-//char * ptr;
-
-char * buffert = (char *) malloc (10000 * sizeof(char));
-
-char * ptr = buffert;
-
-
-
 //call of duty modern warfare mac
 
+int
+strlength(const char *str) {
+	int len = 0;
+	while (str[len]) len++;
+	return len;
+}
 
+void
 
-void WebCrawler::onContentFound(char c) {
+WebCrawler::onContentFound(char c)
 
-	//TITLE Tag title extraction
+{
 
-	if (c == '[') {
+    // initialize word
 
-		*ptr = '\0';
+    if (word == NULL)
 
-		ptr = buffert;
+    {
 
-		//printf("Title: %s\n", ptr);
+        word = new char[1];
 
+        word[0] = '\0';
 
+    }
 
-		if (_urlArray[_headURL]._description == NULL) {
+    
 
-			//printf("Atleast it comes here! %d\n", _headURL);
+    // initialize description
 
-			_urlArray[_headURL]._description = strdup(ptr);
+    if (description == NULL)
 
-			//printf("%s YOLOY\n", _urlArray[_headURL]._description);
+    {
 
-		} else {
+        description = new char[1];
 
-			strcat(_urlArray[_headURL]._description, " ");
+        description[0] = '\0';
 
-			strcat(_urlArray[_headURL]._description, ptr);
+    }
 
-			//printf("%s YOLOY\n", _urlArray[_headURL]._description);
+    
 
-		}
+    // check if this is the end of a word
 
-		
+    if (('A' <= c && c <= 'Z') ||
 
-	} else if (c == ']') {
+        ('a' <= c && c <= 'z') ||
 
-		memset(buffert,0,strlen(buffert));
+        ('0' <= c && c <= '9'))
 
-		ptr = buffert;
+    {
 
-	} else if (c == '"'){
+        char *single = new char[2];
 
-		//Do nothing
+        single[0] = c;
 
-	} else {
+        single[1] = '\0';
 
-		*ptr = c;
+        
 
-		ptr++;
+        char *buffer;
 
-	}
+        buffer = strcat(word, single);
+
+        
+
+        strcpy(word, buffer);
+
+    }
+
+    else
+
+    {
+
+        //  For each word in the document without tags, add the index of this URL to
+
+        //    a URLRecordList in the _wordToURLRecordList table if the URL is not already there.
+
+        
+
+        if (word == NULL || slength(word) <= 0)
+
+            return;
+
+        
+
+        URLRecordList *tmp = NULL;        
+
+        if (_wordToURLRecordList->find(word, &tmp) == false)
+
+        {
+
+            URLRecordList *data = new URLRecordList();
+
+            data->_urlRecordIndex = _headURL;
+
+            data->_next = NULL;
+
+            
+
+            _wordToURLRecordList->insertItem(word, data);
+
+        }
+
+        else
+
+        {
+
+            URLRecordList *data = new URLRecordList();
+
+            data->_urlRecordIndex = _headURL;
+
+            data->_next = tmp;
+
+            
+
+            _wordToURLRecordList->insertItem(word, data);
+
+        }
+
+        
+
+        word = NULL;
+
+    }
+
+    
+
+    // only store the first 500 characters in description
+
+    if (slength(description) < 500)
+
+    {
+
+        char *single = new char[2];
+
+        single[0] = c;
+
+        single[1] = '\0';
+
+        
+
+        char *buffer;
+
+        buffer = strcat(description, single);
+
+        
+
+        strcpy(description, buffer);
+
+        
+
+        delete [] single;
+
+    }
 
 }
 
 
 
-void WebCrawler::onAnchorFound(char * url) {
+void
 
-	if (_tailURL >= _maxUrls) {
+WebCrawler::onAnchorFound(char *url)
 
-		return;
+{
 
-	}
+    //  Find all the hyperlinks of this document and add them to the
 
-	
+        //    _urlArray and _urlToUrlRecord if they are not already in the
 
-	const char * http = "http://";
+        //    _urlToUrlRecord. Only insert up to _maxURL entries.
 
-	const char * https = "https://";
+    
 
-	const char * yol = "//";
+    if (inserted >= _maxUrls)
 
-	const char * hashtag = "#";
+        return;
 
-	bss = new char[200];
+    
 
+    char *root = _urlArray[_headURL]._url;
 
+    
 
-	if (strncmp(http, url, 7) == 0) {
+    // append trailing slash to root url
 
-		for (int i = 0; i < _tailURL; i++) {
+    if (root[slength(root) - 1] != '/')
 
-			if (strcmp(url, _urlArray[i]._url) == 0) {
+    {
 
-				flagone = 1;
+        root = strcat(root, "/");
 
-				break;
+    }
 
-			}
+    
 
-		}
+    // check if this is an absolute url
 
-		if (flagone == 1) {
+    if (url[0] == '/')
 
-			flagone = 0;
+    {
 
-			return;
+        // chop off the directory structure
 
-		} else {
+        int count;
 
-			_urlArray[_tailURL]._url = strdup(url);
+        count = 0;
 
-			_tailURL++;
+        
 
-			//printf("\n\n%s : Yolo Updated URL\n\n", _urlArray[_tailURL - 1]._url);
+        int i;
 
-		}
+        for (i = 0; i < slength(root); i++)
 
-	} else if (strncmp(url, yol, 2) == 0) {
+        {
 
-	} else {
+            if (root[i] == '/')
 
-		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
+                count = count + 1;
 
-			bss = strdup(_urlArray[_headURL]._url);
+            else
 
-			if (strncmp(url, "/", 1)) {
+                continue;
 
-				bss = strcat(bss, "/");
+            
 
-			}
+            if (count >= 3)
 
-			bss = strcat(bss, url);
+            {
 
-			_urlArray[_tailURL]._url = strdup(bss);
+                root[i] = '\0';
 
-			_urlArray[_tailURL]._description = NULL;
+                break;
 
-			_tailURL++;
+            }
 
-			//printf("\n\n%s : Yolo Updated URL\n\n", _urlArray[_tailURL - 1]._url);
+        }
 
-		}
+        
 
-	}
+        url = strcat(root, url);
+
+    }
+
+    else
+
+    {
+
+        char *http = "http://";
+
+        char *https = "https://";
+
+        
+
+        if (strncmp(url, http, 7) != 0 &&
+
+            strncmp(url, https, 8) != 0)
+
+        {
+
+            url = strcat(root, url);
+
+        }
+
+    }
+
+    
+
+    char *absoluteURL = new char[slength(url) + 1];
+
+    strcpy(absoluteURL, url);
+
+    
+
+    int tmp;
+
+    if (_urlToUrlRecord->find(absoluteURL, &tmp) == false)
+
+    {
+
+        _urlArray[_tailURL]._url = absoluteURL;
+
+        _urlArray[_tailURL]._description = NULL;
+
+        _tailURL = _tailURL + 1;
+
+        
+
+        _urlToUrlRecord->insertItem(absoluteURL, _headURL);
+
+        inserted = inserted + 1;
+
+    }
 
 }
 
@@ -209,86 +338,6 @@ WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 	_wordToURLRecordList = new HashTableTemplate<URLRecordList*>();
 }
 
-//char *buffer = new char[10000];
-//char *buffer = (char *)malloc(sizeof(char) * 10000);
-//char *ptr = buffer;
-
-//void 
-//WebCrawler::onContentFound(char c) {
-	
-//	if (c == '[') {
-//		*ptr = '\0';
-//		ptr = buffer;
-//		if (_urlArray[_headURL]._description == NULL) 
-//			_urlArray[_headURL]._description = strdup(ptr);
-//		else {
-//			strcat(_urlArray[_headURL]._description, " ");
-//			strcat(_urlArray[_headURL]._description, ptr);
-//		}
-//		
-//	}
-//	else if (c == ']') {
-//		memset(buffer, 0, strlen(buffer));
-//		ptr = buffer;
-//	}
-//	else if (c == '"') {
-//		//return;
-//	}
-//	else {
-//		*ptr = c;
-//		ptr++;
-//	}
-//}
-
-
-
-//char *bss;
-//int flag1 = 0;
-//int flag2 = 0;
-
-//void
-//WebCrawler::onAnchorFound(char *url) {
-//	if (_tailURL >= _maxUrls) return;
-//	const char *http = "http://";
-//	const char *https = "https://";
-//	const char *slash = "//";
-//	const char *hashtag = "#";
-//	bss = new char[200];
-
-//	if (strncmp(http, url, 7) == 0) {
-//		for (int i = 0; i < _tailURL; i++) {
-//			if (strcmp(url, _urlArray[i]._url) == 0) {
-//				flag1 = 1;
-//				break;
-//			}
-//		}
-//		if (flag1 == 1) {
-//			flag1 = 0;
-//			return;
-//		}
-//		else {
-//			_urlArray[_tailURL]._url = strdup(url);
-//			_tailURL++;
-//		}
-//	}
-//	else if (strncmp(url, slash, 2) == 0) {
-//		//return;
-//	}
-//	else {
-//		if (strncmp(url, https, 8) && strncmp(url, hashtag, 1)) {
-//			bss = strdup(_urlArray[_headURL]._url);
-//			if (strncmp(url, "/", 1)) 
-//				bss = strcat(bss, "/");
-//			bss = strcat(bss, url);
-//			_urlArray[_tailURL]._url = strdup(bss);
-//			_urlArray[_tailURL]._description = NULL;
-//			_tailURL++;
-//		}
-//	}
-
-
-
-//}
 
 void
 WebCrawler::insertURL() {
