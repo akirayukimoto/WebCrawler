@@ -426,3 +426,6 @@ After doing this, you may fix the identity used for this commit with:
 [master b67aa67] Commit web-crawler
  2 files changed, 477 insertions(+), 813 deletions(-)
  rewrite webcrawler2.cpp (94%)
+[master 96f10a6] Commit web-crawler
+ 3 files changed, 622 insertions(+), 2 deletions(-)
+ create mode 100644 SimpleHTMLParser2.cpp
