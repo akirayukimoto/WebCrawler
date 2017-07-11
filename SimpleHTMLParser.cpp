@@ -58,7 +58,7 @@ SimpleHTMLParser::parse(char * buffer, int n)
 			else if(match(&b, "<META CONTENT=\"")) {
 				state = METACF;
 				memset(c, 0, 500*sizeof(char));
-				count = 0;
+				index = 0;
 			}
 			else if(match(&b, "<META NAME=\"DESCRIPTION\" CONTENT=\"")) {
 				state = METANF;
