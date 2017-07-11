@@ -433,3 +433,6 @@ After doing this, you may fix the identity used for this commit with:
  2 files changed, 5 insertions(+), 2 deletions(-)
 [master dae2fe5] Commit web-crawler
  3 files changed, 12 insertions(+), 6 deletions(-)
+[master b8126b2] Commit web-crawler
+ 4 files changed, 740 insertions(+), 744 deletions(-)
+ rewrite webcrawler2.cpp (93%)
