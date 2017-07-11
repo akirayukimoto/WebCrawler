@@ -3,6 +3,10 @@
 #include "openhttp.h"
 #include <string.h>
 
+int i = 0;
+char *c = new char[500];
+int count;
+
 SimpleHTMLParser::SimpleHTMLParser()
 {
 }
@@ -21,7 +25,7 @@ bool
 SimpleHTMLParser::parse(char * buffer, int n)
 {
 	enum { START, TAG, SCRIPT, ANCHOR, HREF,
-	       COMMENT, FRAME, SRC, HTML } state;
+	       COMMENT, FRAME, SRC, METAKEY, METACF, METANF} state;
 
 	state = START;
 
@@ -46,33 +50,46 @@ SimpleHTMLParser::parse(char * buffer, int n)
 			else if (match(&b,"<FRAME ")) {
 				state = FRAME;
 			}
-			//else if (match(&b, "<TITLE ")) {
-			//	state = TITLE;
-			//}
-			//else if(match(&b, "<META CONTENT=\"")) {
-			//	state = METACF;
-			//}
-			//else if(match(&b, "<META NAME=\"DESCRIPTION\" CONTENT=\"")) {
-			//	state = METANF;
-			//}
+			else if (match(&b, "<TITLE ")) {
+				state = TITLE;
+				i++;
+				onContentFound(' ');
+			}
+			else if(match(&b, "<META CONTENT=\"")) {
+				state = METACF;
+				memset(c, 0, 500*sizeof(char));
+				count = 0;
+			}
+			else if(match(&b, "<META NAME=\"DESCRIPTION\" CONTENT=\"")) {
+				state = METANF;
+				onContentFound(' ');
+			}
+			else if(match(&b, "<META NAME=\"KEYWORD\" CONTENT=\"")) {
+				state = METANF;
+				onContentFound(' ');
+			}
+			else if (match(&b, "</HEAD>")) {
+				i = 0;
+				onContentFound('*');
+			}
 			else if	(match(&b,"<")) {
 				state = TAG;
 			}
 			else {
 				char c = *b;
 				//Substitute one or more blank chars with a single space
-				if (c=='\n'||c=='\r'||c=='\t'||c==' ') {
-					if (!lastCharSpace) {
-						if (hasDocument)
-							onContentFound(' ');
-					}
-					lastCharSpace = true;
-				}
-				else {
-					if (hasDocument)
-						onContentFound(c);
-					lastCharSpace = false;
-				}
+				//if (c=='\n'||c=='\r'||c=='\t'||c==' ') {
+				//	if (!lastCharSpace) {
+				//		if (hasDocument)
+				//			onContentFound(' ');
+				//	}
+				//	lastCharSpace = true;
+				//}
+				//else {
+				//	if (hasDocument)
+				//		onContentFound(c);
+				//	lastCharSpace = false;
+				//}
 				
 				b++;
 			}
@@ -166,15 +183,72 @@ SimpleHTMLParser::parse(char * buffer, int n)
 			}
 			break;
 		}
-		case HTML: {
-			if (match(&b, ">")) {
-				hasDocument = true;
+		case METANF: {
+			if (match(&b,"\" />")) {
 				state = START;
 			}
+			else if(match(&b,"\"/>")) {
+				state = START;
+				
+			}
+			else if(match(&b,"/>")) {
+				state = START;
+				
+			}
+			else if(match(&b,"\" >")) {
+				state = START;
+				//onContentFound('*');
+			}
+			else if(match(&b,"\">")) {
+				state = START;
+			}
+			else if(match(&b,">")) {
+				state = START;
+			}			
 			else {
+				char c = *b;
+				if (!(('a'<= c && c <= 'z') || ('A' <= c && c <= 'Z') || ('0' <= c && c <= '0'))) {
+					if (!lastCharSpace) {
+						onContentFound(' ');
+					}
+					lastCharSpace = true;
+				}
+				else {
+					onContentFound(c);
+					lastCharSpace = false;
+				}
 				b++;
 			}
 			break;
+		}
+		case METACF: {
+			if (match(&b, "\" name=\"description\"")||match(&b, "\" name=\"keywords\"")) {
+				onContentFound(' ');
+				for(int i = 0; i < 400; i++) {
+					if(c[i]==0) break;
+					else	onContentFound(c[i]);
+				}
+				state = START;
+			}
+			else if (match(&b,">")) {
+				state = START;
+			}			
+			else {
+				char d = *b;
+				if (!(('a'<= d && d <= 'z') || ('A' <= d && d <= 'Z') || ('0' <= d && d <= '9'))) {
+					if (!lastCharSpace) {
+						c[coun++] = ' ';
+					}
+					lastCharSpace = true;
+				}
+				else {
+					c[coun++] = *b;
+					lastCharSpace = false;
+				}
+				b++;
+			}
+			break;
+
 		}
 		case TAG: {
 			if (match(&b, ">")) {
