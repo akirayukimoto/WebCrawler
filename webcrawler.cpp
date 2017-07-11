@@ -12,11 +12,8 @@ int inserted;
 int e = 0;
 
 char *description = (char*)malloc(10000*sizeof(char));
-
 char *getWord = new char[20];
-
 int ccount=0;
-
 int count = 0;
 
 //call of duty modern warfare mac
@@ -190,24 +187,24 @@ void WebCrawler::onContentFound(char c)
 			if (strcmp(word,"")) {    
         			if (!_wordToURLRecordList->find(word, &prev)) {
             				URLRecordList *data = new URLRecordList();
-         				data -> _urlRecordIndex = _headURL;
-            				data -> _next = NULL;
+         				data->_urlRecordIndex = _headURL;
+            				data->_next = NULL;
             				_wordToURLRecordList->insertItem(word, data);
         			}
         			else {	
 					int flag = 0;
 					URLRecordList *tmp = prev;
-					while (tmp!=NULL) {
-						if(tmp -> _urlRecordIndex == _headURL) {
+					while (tmp != NULL) {
+						if(tmp->_urlRecordIndex == _headURL) {
 							flag = 1;
 							break;
 						}
-						tmp = tmp -> _next;
+						tmp = tmp->_next;
 					}
 					if (flag == 0) {
             					URLRecordList *data = new URLRecordList();
-            					data -> _urlRecordIndex = _headURL;
-            					data -> _next = prev;
+            					data->_urlRecordIndex = _headURL;
+            					data->_next = prev;
 						_wordToURLRecordList->insertItem(word, data);
             				}
 				}
@@ -219,7 +216,7 @@ void WebCrawler::onContentFound(char c)
 	else {
 		description[count] = '\0';
 		count = 0;
-		if(description!=NULL) {
+		if(description != NULL) {
 			_urlArray[_headURL]._description = strdup(description);
 
 		}
@@ -233,14 +230,14 @@ void WebCrawler::onAnchorFound(char * url){
 	bool flag = true;
 	const char *http = "http://";
 	if(_tailURL >= _maxUrls) return;
-	else if(strncmp(url, http, strlen("http://")) == 0) {
+	else if(!strncmp(url, http, strlen("http://"))) {
 		strcpy(temp,url);
 	}
-	else if(strncmp(url,"//",strlen("//")) == 0) {
+	else if(!strncmp(url,"//",strlen("//"))) {
 		strcpy(temp,"http:");
 		strcat(temp,url);
 	}
-	else if(strncmp(url,"/",strlen("/")) == 0) {
+	else if(!strncmp(url,"/",strlen("/"))) {
 		strcpy(temp, _urlArray[_headURL]._url);
 		for(int i = 10; i < strlen(temp); i++) {
 			if(temp[i] == '/') {
@@ -260,11 +257,10 @@ void WebCrawler::onAnchorFound(char * url){
 				break;
 			}
 		}
-		if(flag && strcmp(finalurl,"")) {
-			//inserting this absolute URL
+		if(flag && strcmp(finalurl, "")) {
 			_urlArray[_tailURL]._url = finalurl;
 		//	_urlArray[_tailURL]._description = "";
-			_urlToUrlRecord -> insertItem(finalurl,_tailURL);
+			_urlToUrlRecord -> insertItem(finalurl, _tailURL);
 			//count = 0;
 			_tailURL++;
 		}
