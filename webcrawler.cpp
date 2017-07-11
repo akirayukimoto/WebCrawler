@@ -12,6 +12,15 @@ char *description;
 
 int inserted;
 
+int
+strlength(const char *str) {
+	int len = 0;
+	while (str[len]) {
+		len++;
+	}
+	return len;
+}
+
 WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 {
 	// Allocate space for _urlArray
@@ -90,7 +99,7 @@ WebCrawler::onContentFound(char c) {
 		strcpy(word, tmp);
 	}
 	else {
-        	if (word == NULL || strlen(word) <= 0) return;
+        	if (word == NULL || strlength(word) <= 0) return;
 
         	URLRecordList *tmp = NULL;        
 
@@ -215,7 +224,7 @@ WebCrawler::onAnchorFound(char *url)
 
         int i;
 
-        for (i = 0; i < strlen(root); i++)
+        for (i = 0; i < strlength(root); i++)
 
         {
 
@@ -271,7 +280,7 @@ WebCrawler::onAnchorFound(char *url)
 
     
 
-    char *absoluteURL = new char[strlen(url) + 1];
+    char *absoluteURL = new char[strlength(url) + 1];
 
     strcpy(absoluteURL, url);
 
