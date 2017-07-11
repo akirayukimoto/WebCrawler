@@ -21,9 +21,11 @@ bool
 SimpleHTMLParser::parse(char * buffer, int n)
 {
 	enum { START, TAG, SCRIPT, ANCHOR, HREF,
-	       COMMENT, FRAME, SRC, TITLE, METACF, METANF } state;
+	       COMMENT, FRAME, SRC, HTML } state;
 
 	state = START;
+
+	bool hasDocument = false;
 	
 	char * bufferEnd = buffer + n;
 	char * b = buffer;
@@ -157,6 +159,16 @@ SimpleHTMLParser::parse(char * buffer, int n)
 		case COMMENT: {
 			if (match(&b,"-->")) {
 				// End comments
+				state = START;
+			}
+			else {
+				b++;
+			}
+			break;
+		}
+		case HTML: {
+			if (match(&b, ">")) {
+				hasDocument = true;
 				state = START;
 			}
 			else {
