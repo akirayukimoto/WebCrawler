@@ -61,12 +61,14 @@ SimpleHTMLParser::parse(char * buffer, int n)
 				//Substitute one or more blank chars with a single space
 				if (c=='\n'||c=='\r'||c=='\t'||c==' ') {
 					if (!lastCharSpace) {
-						onContentFound(' ');
+						if (hasDocument)
+							onContentFound(' ');
 					}
 					lastCharSpace = true;
 				}
 				else {
-					onContentFound(c);
+					if (hasDocument)
+						onContentFound(c);
 					lastCharSpace = false;
 				}
 				
