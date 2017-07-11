@@ -25,7 +25,7 @@ bool
 SimpleHTMLParser::parse(char * buffer, int n)
 {
 	enum { START, TAG, SCRIPT, ANCHOR, HREF,
-	       COMMENT, FRAME, SRC, METAKEY, METACF, METANF} state;
+	       COMMENT, FRAME, SRC, TITLE, METAKEY, METACF, METANF} state;
 
 	state = START;
 
@@ -237,12 +237,12 @@ SimpleHTMLParser::parse(char * buffer, int n)
 				char d = *b;
 				if (!(('a'<= d && d <= 'z') || ('A' <= d && d <= 'Z') || ('0' <= d && d <= '9'))) {
 					if (!lastCharSpace) {
-						c[coun++] = ' ';
+						c[count++] = ' ';
 					}
 					lastCharSpace = true;
 				}
 				else {
-					c[coun++] = *b;
+					c[count++] = *b;
 					lastCharSpace = false;
 				}
 				b++;
