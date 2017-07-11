@@ -11,7 +11,7 @@ int inserted;
 
 int e = 0;
 
-char *descrption = (char*)malloc(10000*sizeof(char));
+char *description = (char*)malloc(10000*sizeof(char));
 
 char *getWord = new char[20];
 
