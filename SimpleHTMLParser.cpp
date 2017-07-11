@@ -47,10 +47,10 @@ SimpleHTMLParser::parse(char * buffer, int n)
 			else if (match(&b, "<TITLE ")) {
 				state = TITLE;
 			}
-			else if(match(&b, "<METACF ") {
+			else if(match(&b, "<METACF ")) {
 				state = METACF;
 			}
-			else if(match(&b, "<METANF ") {
+			else if(match(&b, "<METANF ")) {
 				state = METANF;
 			}
 			else if	(match(&b,"<")) {
