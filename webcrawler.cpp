@@ -189,7 +189,7 @@ WebCrawler::onAnchorFound(char *url)
 
     // append trailing slash to root url
 
-    if (root[slength(root) - 1] != '/')
+    if (root[strlen(root) - 1] != '/')
 
     {
 
@@ -215,7 +215,7 @@ WebCrawler::onAnchorFound(char *url)
 
         int i;
 
-        for (i = 0; i < slength(root); i++)
+        for (i = 0; i < strlen(root); i++)
 
         {
 
@@ -271,7 +271,7 @@ WebCrawler::onAnchorFound(char *url)
 
     
 
-    char *absoluteURL = new char[slength(url) + 1];
+    char *absoluteURL = new char[strlen(url) + 1];
 
     strcpy(absoluteURL, url);
 
