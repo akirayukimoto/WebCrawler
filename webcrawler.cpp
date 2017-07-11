@@ -23,288 +23,99 @@ strlength(const char *str) {
 
 void
 
-WebCrawler::onContentFound(char c)
-
-{
-
-    // initialize word
-
-    if (word == NULL)
-
-    {
-
+WebCrawler::onContentFound(char c) {
+    if (word == NULL) {
         word = new char[1];
-
         word[0] = '\0';
-
     }
-
-    
-
-    // initialize description
-
-    if (description == NULL)
-
-    {
-
+    if (description == NULL) {
         description = new char[1];
-
         description[0] = '\0';
-
     }
-
-    
-
-    // check if this is the end of a word
 
     if (('A' <= c && c <= 'Z') ||
-
         ('a' <= c && c <= 'z') ||
-
-        ('0' <= c && c <= '9'))
-
-    {
-
+        ('0' <= c && c <= '9')) {
         char *single = new char[2];
-
         single[0] = c;
-
         single[1] = '\0';
-
-        
-
         char *buffer;
-
         buffer = strcat(word, single);
-
-        
-
         strcpy(word, buffer);
-
     }
-
-    else
-
-    {
-
-        //  For each word in the document without tags, add the index of this URL to
-
-        //    a URLRecordList in the _wordToURLRecordList table if the URL is not already there.
-
-        
-
+    else {
         if (word == NULL || strlength(word) <= 0)
-
             return;
-
-        
-
         URLRecordList *tmp = NULL;        
-
-        if (_wordToURLRecordList->find(word, &tmp) == false)
-
-        {
-
+        if (_wordToURLRecordList->find(word, &tmp) == false) {
             URLRecordList *data = new URLRecordList();
-
             data->_urlRecordIndex = _headURL;
-
             data->_next = NULL;
-
-            
-
             _wordToURLRecordList->insertItem(word, data);
-
         }
-
-        else
-
-        {
-
+        else {
             URLRecordList *data = new URLRecordList();
-
             data->_urlRecordIndex = _headURL;
-
             data->_next = tmp;
-
-            
-
             _wordToURLRecordList->insertItem(word, data);
 
         }
-
-        
-
         word = NULL;
 
     }
-
-    
-
-    // only store the first 500 characters in description
-
-    if (strlength(description) < 500)
-
-    {
-
+    if (strlength(description) < 500) {
         char *single = new char[2];
-
         single[0] = c;
-
         single[1] = '\0';
-
-        
-
         char *buffer;
-
         buffer = strcat(description, single);
-
-        
-
         strcpy(description, buffer);
-
-        
-
         delete [] single;
-
     }
-
 }
 
 
 
 void
 
-WebCrawler::onAnchorFound(char *url)
-
-{
-
-    //  Find all the hyperlinks of this document and add them to the
-
-        //    _urlArray and _urlToUrlRecord if they are not already in the
-
-        //    _urlToUrlRecord. Only insert up to _maxURL entries.
-
-    
-
-    if (inserted >= _maxUrls)
-
-        return;
-
-    
-
+WebCrawler::onAnchorFound(char *url) {
+    if (inserted >= _maxUrls) return;
     char *root = _urlArray[_headURL]._url;
 
-    
-
-    // append trailing slash to root url
-
-    if (root[strlength(root) - 1] != '/')
-
-    {
-
+    if (root[strlength(root) - 1] != '/') {
         root = strcat(root, "/");
-
     }
 
-    
-
-    // check if this is an absolute url
-
-    if (url[0] == '/')
-
-    {
-
-        // chop off the directory structure
-
-        int count;
-
-        count = 0;
-
-        
-
+    if (url[0] == '/') {
+        int count = 0;
         int i;
-
-        for (i = 0; i < strlength(root); i++)
-
-        {
-
+        for (i = 0; i < strlength(root); i++) {
             if (root[i] == '/')
-
                 count = count + 1;
-
-            else
-
-                continue;
-
-            
-
-            if (count >= 3)
-
-            {
-
+            else continue;
+            if (count >= 3) {
                 root[i] = '\0';
-
                 break;
-
             }
-
         }
-
-        
-
         url = strcat(root, url);
-
     }
-
-    else
-
-    {
-
+    else {
         const char *http = "http://";
-
         const char *https = "https://";
-
-        
-
-        if (strncmp(url, http, 7) != 0 &&
-
-            strncmp(url, https, 8) != 0)
-
-        {
-
+        if (strncmp(url, http, 7) != 0 && strncmp(url, https, 8) != 0) {
             url = strcat(root, url);
-
         }
-
     }
-
-    
-
     char *absoluteURL = new char[strlength(url) + 1];
-
     strcpy(absoluteURL, url);
-
-    
-
     int tmp;
-
-    if (_urlToUrlRecord->find(absoluteURL, &tmp) == false)
-
-    {
-
+    if (_urlToUrlRecord->find(absoluteURL, &tmp) == false) {
         _urlArray[_tailURL]._url = absoluteURL;
-
         _urlArray[_tailURL]._description = NULL;
-
         _tailURL = _tailURL + 1;
-
-        
-
         _urlToUrlRecord->insertItem(absoluteURL, _headURL);
-
         inserted = inserted + 1;
-
     }
 
 }
