@@ -230,7 +230,7 @@ void WebCrawler::onAnchorFound(char * url){
 	char *temp = (char *)malloc(1000*sizeof(char));
 	memset(temp,0,1000*sizeof(char));
 	bool flag = true;
-	const char http = "http://";
+	const char *http = "http://";
 	if(_tailURL >= _maxUrls) return;
 	else if(strncmp(url, http, strlen("http://")) == 0) {
 		strcpy(temp,url);
@@ -308,11 +308,11 @@ WebCrawler::crawl()
 
 		//_urlArray[_headURL]._description = strdup(description);
 	}
-	insertURL();
+	//insertURL();
 	//for (int i = 0; i < _tailURL; i++) {
 	//	printf("%i %s\n",i, _urlArray[i]._description); 
 	//}
-	insertWord();
+	//insertWord();
 	//_urlArray[_headURL]._description = strdup(description);
 	//const char *urlFile = "url.txt";
 	//writeURLFile(urlFile);
