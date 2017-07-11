@@ -21,14 +21,6 @@ int count = 0;
 
 //call of duty modern warfare mac
 
-int
-strlength(const char *str) {
-	int len = 0;
-	while (str[len]) len++;
-	return len;
-}
-
-
 WebCrawler::WebCrawler(int maxUrls, int nurlRoots, const char **urlRoots)
 {
 	// Allocate space for _urlArray
@@ -336,32 +328,6 @@ void WebCrawler::onAnchorFound(char * url){
 
 	}
 
-	//previous comments
-
-	/*else if((('a' <= url[0] && url[0] <= 'z')||('A' <= url[0] && url[0] <= 'Z')) && (strncmp(url,"https://",(strlen("https://"))) !=0) && (strncmp(url,"ftp://",(strlen("ftp://"))) !=0)&& (strncmp(url,"mailto:",(strlen("mailto:"))) !=0)) {
-
-		strcpy(temp, _urlArray[_headURL]._url);
-
-		for(int i = strlen(temp)-1; i > 8; i--) {
-
-			if(temp[i] =='/') {
-
-				temp[i+1] = '\0';
-
-				//strcat(temp,"/");
-
-				strcat(temp,url);
-
-				//printf("abhiga\n");	
-
-				break;
-
-			}
-
-		}
-
-	}*/
-
 	for (int i = 0; i< _tailURL; i++) {
 
 			//checking if the URL already exists in URL array
@@ -475,7 +441,7 @@ int main(int argc, char **argv) {
 
 	WebCrawler *crawler = new WebCrawler(maxUrls, (argc - start), initialUrls);
 	crawler->crawl();
-	//crawler->writeURLFile("url.txt");
-	//crawler->writeWordFile("word.txt");
+	crawler->writeURLFile("url.txt");
+	crawler->writeWordFile("word.txt");
 	
 }
