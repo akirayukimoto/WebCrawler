@@ -175,7 +175,7 @@ void WebCrawler::onContentFound(char c)
 	if ('A' <= c && c <= 'Z')
 		c = c + 32;
 	if(c != '*'){
-		desc[count] = c;
+		description[count] = c;
 		count++;
 		if(c!= '\t' && c!=' ' && c!= '\n' && c!= '\0') {
 			getWord[ccount] = c;
