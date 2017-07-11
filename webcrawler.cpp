@@ -93,7 +93,7 @@ WebCrawler::onContentFound(char c)
 
         
 
-        if (word == NULL || slength(word) <= 0)
+        if (word == NULL || strlength(word) <= 0)
 
             return;
 
@@ -143,7 +143,7 @@ WebCrawler::onContentFound(char c)
 
     // only store the first 500 characters in description
 
-    if (slength(description) < 500)
+    if (strlength(description) < 500)
 
     {
 
@@ -199,7 +199,7 @@ WebCrawler::onAnchorFound(char *url)
 
     // append trailing slash to root url
 
-    if (root[slength(root) - 1] != '/')
+    if (root[strlength(root) - 1] != '/')
 
     {
 
@@ -225,7 +225,7 @@ WebCrawler::onAnchorFound(char *url)
 
         int i;
 
-        for (i = 0; i < slength(root); i++)
+        for (i = 0; i < strlength(root); i++)
 
         {
 
@@ -281,7 +281,7 @@ WebCrawler::onAnchorFound(char *url)
 
     
 
-    char *absoluteURL = new char[slength(url) + 1];
+    char *absoluteURL = new char[strlength(url) + 1];
 
     strcpy(absoluteURL, url);
 
