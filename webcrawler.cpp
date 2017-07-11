@@ -4,7 +4,7 @@
 // Add your implementation here
 
 char *word;
-char *description;
+//char *description;
 
 int inserted;
 
