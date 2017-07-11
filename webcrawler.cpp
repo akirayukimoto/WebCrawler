@@ -131,6 +131,7 @@ void
 WebCrawler::writeURLFile(const char *urlFileName)
 {
 	FILE *f = fopen(urlFileName, "a");
+	if (f == NULL) return;
 	for (int i = 0; i < _tailURL; i++) {
 		fprintf(f, "%d %s\n",i, _urlArray[i]._url);
 		if (_urlArray[i]._description != NULL) {
@@ -148,7 +149,7 @@ void
 WebCrawler::writeWordFile(const char *wordFileName)
 {
 	FILE *file = fopen(wordFileName, "a");
-
+	if (file == NULL) return;
 	HashTableTemplateIterator<URLRecordList *> it(_wordToURLRecordList);
 	const char *key;
 	URLRecordList *data;
