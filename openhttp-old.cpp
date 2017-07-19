@@ -52,7 +52,7 @@ int parseURL( const char * url, char * host, int * port, char * document )
 	const char * httpsTag = "https://";
 	//int lenHttpTag = strlen(httpTag);
 	int lenHttpTag;
-	if (strncmp(url,httpTag, strlen(httpTag)) && strncmp(url, httpsTag, strlen(httpsTag)) {
+	if (strncmp(url,httpTag, strlen(httpTag)) && strncmp(url, httpsTag, strlen(httpsTag))) {
 		// Missing"http:"
 		return 1;
 	}
