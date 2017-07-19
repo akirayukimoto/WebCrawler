@@ -49,11 +49,17 @@ int parseURL( const char * url, char * host, int * port, char * document )
 {
 	// Make sure that URL starts with "http:"
 	const char * httpTag = "http://";
-	int lenHttpTag = strlen(httpTag);
-	if ( strncmp(url,httpTag, lenHttpTag ) ) {
+	const char * httpsTag = "https://";
+	//int lenHttpTag = strlen(httpTag);
+	int lenHttpTag;
+	if (strncmp(url,httpTag, strlen(httpTag)) && strncmp(url, httpsTag, strlen(httpsTag)) {
 		// Missing"http:"
 		return 1;
 	}
+	if (!strcmp(url, httpTag, strlen(httpTag))) {
+		lenHttpTag = strlen(httpTag);
+	}
+	else lenHttpTag = strlen(httpsTag);
 	
 	// Get host part
 	char * p = (char *) url + lenHttpTag;
