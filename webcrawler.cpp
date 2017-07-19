@@ -231,7 +231,7 @@ void WebCrawler::onAnchorFound(char * url){
 	const char *http = "http://";
 	const char *https = "https://";
 	if(_tailURL >= _maxUrls) return;
-	else if(!strncmp(url, http, strlen("http://")) || !strncmp(url, https, strlen(https)) {
+	else if(!strncmp(url, http, strlen("http://")) || !strncmp(url, https, strlen(https))) {
 		strcpy(temp,url);
 	}
 	else if(!strncmp(url,"//",strlen("//"))) {
