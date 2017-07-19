@@ -234,9 +234,6 @@ void WebCrawler::onAnchorFound(char * url){
 	else if(!strncmp(url, http, strlen("http://"))) {
 		strcpy(temp,url);
 	}
-	else if (!strncmp(url, https, strlen("https://"))) {
-		strcpy(temp, url);
-	}
 	else if(!strncmp(url,"//",strlen("//"))) {
 		strcpy(temp,"http:");
 		strcat(temp,url);
