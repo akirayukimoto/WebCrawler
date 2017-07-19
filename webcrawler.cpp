@@ -229,7 +229,6 @@ void WebCrawler::onAnchorFound(char * url){
 	memset(temp,0,1000*sizeof(char));
 	bool flag = true;
 	const char *http = "http://";
-	const char *https = "https://";
 	if(_tailURL >= _maxUrls) return;
 	else if(!strncmp(url, http, strlen("http://"))) {
 		strcpy(temp,url);
@@ -257,15 +256,15 @@ void WebCrawler::onAnchorFound(char * url){
 				flag = false;
 				break;
 			}
-		}
-		if(flag && strcmp(finalurl, "")) {
-			_urlArray[_tailURL]._url = finalurl;
-		//	_urlArray[_tailURL]._description = "";
-			_urlToUrlRecord -> insertItem(finalurl, _tailURL);
-			//count = 0;
-			_tailURL++;
-		}
-		free(temp);
+	}
+	if(flag && strcmp(finalurl, "")) {
+		_urlArray[_tailURL]._url = finalurl;
+	//	_urlArray[_tailURL]._description = "";
+		_urlToUrlRecord -> insertItem(finalurl, _tailURL);
+		//count = 0;
+		_tailURL++;
+	}
+	free(temp);
 }
 
 void
