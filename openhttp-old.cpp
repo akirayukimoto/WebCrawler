@@ -56,7 +56,7 @@ int parseURL( const char * url, char * host, int * port, char * document )
 		// Missing"http:"
 		return 1;
 	}
-	if (!strcmp(url, httpTag, strlen(httpTag))) {
+	if (!strncmp(url, httpTag, strlen(httpTag))) {
 		lenHttpTag = strlen(httpTag);
 	}
 	else lenHttpTag = strlen(httpsTag);
