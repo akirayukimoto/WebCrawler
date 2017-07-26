@@ -127,7 +127,7 @@ WebCrawler::insertWord() {
 void
 WebCrawler::writeURLFile(const char *urlFileName)
 {
-	FILE *f = fopen(urlFileName, "a");
+	FILE *f = fopen(urlFileName, "w+");
 	if (f == NULL) return;
 	for (int i = 0; i < _tailURL; i++) {
 		fprintf(f, "%d %s\n",i, _urlArray[i]._url);
@@ -148,7 +148,7 @@ WebCrawler::writeURLFile(const char *urlFileName)
 void
 WebCrawler::writeWordFile(const char *wordFileName)
 {
-	FILE *file = fopen(wordFileName, "a");
+	FILE *file = fopen(wordFileName, "w+");
 	if (file == NULL) return;
 	HashTableTemplateIterator<URLRecordList *> it(_wordToURLRecordList);
 	const char *key;
