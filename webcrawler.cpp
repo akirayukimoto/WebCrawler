@@ -133,7 +133,7 @@ WebCrawler::writeURLFile(const char *urlFileName)
 		fprintf(f, "%d %s\n",i, _urlArray[i]._url);
 		//if (_urlArray[i]._description != NULL) {
 		//if (strcmp(_urlArray[i]._description, "\0") != 0) {
-			fprintf(f, "%s\n", _urlArray[i]._description);
+		fprintf(f, "%s\n", _urlArray[i]._description);
 			//fprintf(f, "%s\n", _urlArray[i]._description);
 		//}
 		//else fprintf(f, "%s\n", "No descriotion");
