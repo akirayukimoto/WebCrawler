@@ -259,7 +259,7 @@ void WebCrawler::onAnchorFound(char * url){
 		if(temp[strlen(temp)-1] =='/')
 			temp[strlen(temp) - 1] = '\0';
 			finalurl = strdup(temp);
-			if(strcmp(finalurl, _urlArray[i]._url)==0) {
+			if(!strcmp(finalurl, _urlArray[i]._url)) {
 				flag = false;
 				break;
 			}
