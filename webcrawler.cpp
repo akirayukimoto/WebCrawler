@@ -142,7 +142,7 @@ WebCrawler::writeURLFile(const char *urlFileName)
 		//fprintf(f, "%s\n", "");
 		fprintf(f, "\n");
 	}
-	fclose(f);
+	//fclose(f);
 }
 
 void
@@ -160,7 +160,7 @@ WebCrawler::writeWordFile(const char *wordFileName)
 		URLRecordList *curr = data;
 		while (curr != NULL) {
 			//if (j != curr->_urlRecordIndex) {
-				fprintf(file, "%d ", curr->_urlRecordIndex);
+			fprintf(file, "%d ", curr->_urlRecordIndex);
 			//}
 			//j = curr->_urlRecordIndex;
 			curr = curr->_next;
@@ -168,7 +168,7 @@ WebCrawler::writeWordFile(const char *wordFileName)
 		fprintf(file, "\n");
 		
 	}
-	fclose(file);
+	//fclose(file);
 }
 
 void WebCrawler::onContentFound(char c)
